@@ -1,0 +1,10 @@
+[TRAINER_NONE] = {
+    .trainerClass = TRAINER_CLASS_PKMN_TRAINER_1,
+    .encounterMusic_gender = TRAINER_ENCOUNTER_MUSIC_MALE,
+    .trainerPic = TRAINER_PIC_HIKER,
+    .trainerName = _("Trainer1"),
+    .items = {},
+    .doubleBattle = TRUE,
+    .aiFlags = AI_FLAG_A | AI_FLAG_B,
+    .party = TRAINER_PARTY(myparty),
+}

@@ -1,0 +1,146 @@
+package parsers
+
+import (
+    "fmt"
+    "os"
+    "bufio"
+    "strings"
+    "github.com/geefuoco/trainer_editor/data_objects"
+)
+
+const TRAINER_STRUCT_SIZE = 8;
+// This is the format of a Trainer as of Oct 19 2023
+// [TRAINER_JUAN_5] =
+// {
+//     .trainerClass = TRAINER_CLASS_LEADER,
+//     .encounterMusic_gender = TRAINER_ENCOUNTER_MUSIC_MALE,
+//     .trainerPic = TRAINER_PIC_LEADER_JUAN,
+//     .trainerName = _("JUAN"),
+//     .items = {ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_NONE},
+//     .doubleBattle = TRUE,
+//     .aiFlags = AI_FLAG_CHECK_BAD_MOVE | AI_FLAG_TRY_TO_FAINT | AI_FLAG_CHECK_VIABILITY,
+//     .party = TRAINER_PARTY(sParty_Juan5),
+// },
+
+func ParseTrainers(filepath string) []*data_objects.Trainer {
+    file, err := os.Open(filepath)
+    defer file.Close()
+    if err != nil {
+        fmt.Println("Error when opening file: ", err)
+        return nil
+    }
+
+    var trainers []*data_objects.Trainer
+    currentTrainer := &data_objects.Trainer{}
+    scanner := bufio.NewScanner(file)
+    for scanner.Scan() {
+        line := scanner.Text()
+        line = strings.ReplaceAll(line, " ", "")
+        if len(line) < 10 {
+            continue
+        }
+        // Strip the line of whitespaces
+        if strings.Contains(line, ".trainerClass") {
+            if currentTrainer.TrainerClass != "" {
+                trainers = append(trainers, currentTrainer)
+            }
+            currentTrainer = &data_objects.Trainer{}
+            start := strings.IndexByte(line, '=')
+            if start == -1 {
+                panic("Error: Malformatted Trainer struct")
+            }
+            startOffset := 1
+            trainerClass := line[start+startOffset:len(line)-1]
+            currentTrainer.TrainerClass = trainerClass
+            continue
+        } else if strings.Contains(line, ".encounterMusic_gender") {
+            start := strings.IndexByte(line, '=')
+            if start == -1 {
+                panic("Error: Malformatted Trainer struct")
+            }
+            startOffset := 1
+            encounterMusic := line[start+startOffset:len(line)-1]
+            currentTrainer.EncounterMusicGender = encounterMusic
+        } else if strings.Contains(line, ".trainerPic") {
+            start := strings.IndexByte(line, '=')
+            if start == -1 {
+                panic("Error: Malformatted Trainer struct")
+            }
+            startOffset:=1
+            trainerPic:= line[start+startOffset:len(line)-1]
+            currentTrainer.TrainerPic= trainerPic
+        } else if strings.Contains(line, ".trainerName") {
+            start := strings.IndexByte(line, '=')
+            if start == -1 {
+                panic("Error: Malformatted Trainer struct")
+            }
+            startOffset := 4 // =_("
+            endOffset := 3 // "),
+            trainerName:= line[start+startOffset:len(line)-endOffset]
+            currentTrainer.TrainerName= trainerName
+        } else if strings.Contains(line, ".items") {
+            items := make([]string, 0, 4)
+            start := strings.IndexByte(line, '=')
+            if start == -1 {
+                panic("Error: Malformatted Trainer struct")
+            }
+            startOffset := 2 // ={
+            endOffset := 2 // },
+            for _, item := range strings.Split(line[start+startOffset:len(line)-endOffset], ",") {
+                if !(item ==  "" || item == "\n") {
+                    items = append(items, strings.TrimSpace(item))
+                } 
+            }
+            currentTrainer.Items = items
+        } else if strings.Contains(line, ".doubleBattle") {
+            start := strings.IndexByte(line, '=')
+            if start == -1 {
+                panic("Error: Malformatted Trainer struct")
+            }
+            var doubleBattle bool
+            if strings.Contains(line, "FALSE") {
+                doubleBattle = false
+            } else {
+                doubleBattle = true
+            }
+            currentTrainer.DoubleBattle = doubleBattle
+        } else if strings.Contains(line, ".aiFlags") {
+            start := strings.IndexByte(line, '=')
+            if start == -1 {
+                panic("Error: Malformatted Trainer struct")
+            }
+            startOffset := 1
+            endOffset := 1
+            var aiFlags []string
+            if strings.Contains(line, "AI_FLAG") {
+                aiFlags = strings.Split(line[start+startOffset:len(line)-endOffset], "|")
+            }
+            currentTrainer.AiFlags = aiFlags
+        } else if strings.Contains(line, ".party") {
+            start := strings.IndexByte(line, '=')
+            if start == -1 {
+                panic("Error: Malformatted Trainer struct")
+            }
+            startOffset := 1
+            endOffset := 1
+            var party string
+            if strings.Contains(line, "NULL") {
+                party = ""
+            } else {
+                if strings.HasSuffix(line, ",") {
+                    party = line[start+startOffset:len(line)-endOffset]
+                } else {
+                    party = line[start+startOffset:len(line)]
+                }
+            }
+            currentTrainer.Party = party
+        }
+    }
+    trainers = append(trainers, currentTrainer)
+
+    if err := scanner.Err(); err != nil {
+        fmt.Println("Error reading file: ", err)
+        return nil
+    }
+    return trainers
+}

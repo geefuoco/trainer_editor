@@ -1,0 +1,32 @@
+#define ITEM_NONE 0
+
+// Poké Balls
+#define ITEM_POKE_BALL 1
+#define ITEM_GREAT_BALL 2
+#define ITEM_ULTRA_BALL 3
+#define ITEM_MASTER_BALL 4
+#define ITEM_PREMIER_BALL 5
+#define ITEM_HEAL_BALL 6
+#define ITEM_NET_BALL 7
+#define ITEM_NEST_BALL 8
+#define ITEM_DIVE_BALL 9
+#define ITEM_DUSK_BALL 10
+#define ITEM_TIMER_BALL 11
+#define ITEM_QUICK_BALL 12
+#define ITEM_REPEAT_BALL 13
+#define ITEM_LUXURY_BALL 14
+#define ITEM_LEVEL_BALL 15
+
+#define ITEMS_COUNT 814
+#define ITEM_FIELD_ARROW ITEMS_COUNT
+
+// A special item id associated with "Cancel"/"Exit" etc. in a list of items or decorations
+// Its icon is defined at ITEMS_COUNT as the "return to field" arrow
+#define ITEM_LIST_END 0xFFFF
+
+#define ITEM_USE_MAIL             0
+#define ITEM_USE_PARTY_MENU       1
+#define ITEM_USE_FIELD            2
+#define ITEM_USE_PBLOCK_CASE      3
+#define ITEM_USE_BAG_MENU         4 // No exit callback, stays in bag menu
+#define ITEM_USE_PARTY_MENU_MOVES 5

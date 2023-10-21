@@ -16,7 +16,10 @@ type Trainer struct{
 }
 
 func (t* Trainer) GetPartyName() string {
-    return t.Party[len("TRAINER_PARTY("):len(t.Party)-1]
+    if len(t.Party) > 0 {
+        return t.Party[len("TRAINER_PARTY("):len(t.Party)-1]
+    }
+    return ""
 }
 
 func (t *Trainer) String() string {

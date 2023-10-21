@@ -9,10 +9,14 @@ type Trainer struct{
     EncounterMusicGender string
     TrainerPic string
     TrainerName string
-    Items []string
+    Items [4]string
     DoubleBattle bool 
     AiFlags []string
     Party string
+}
+
+func (t* Trainer) GetPartyName() string {
+    return t.Party[len("TRAINER_PARTY("):len(t.Party)-1]
 }
 
 func (t *Trainer) String() string {

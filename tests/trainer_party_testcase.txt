@@ -1,0 +1,12 @@
+static const struct TrainerMon sParty_Sawyer1[] = {
+    {
+    .iv = TRAINER_PARTY_IVS(1, 2, 3, 4, 5, 6),
+    .lvl = 25,
+    .species = SPECIES_MEWTWO,
+    .ev = TRAINER_PARTY_EVS(10, 11, 21, 24, 90, 0),
+    .heldItem = ITEM_NONE,
+    .moves = {MOVE_SLASH, MOVE_PSYCHIC, MOVE_THUNDER, MOVE_BLIZZARD},
+    .ability = ABILITY_INTIMIDATE,
+    .isShiny = FALSE,
+    },
+};

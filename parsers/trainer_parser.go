@@ -79,17 +79,17 @@ func ParseTrainers(filepath string) []*data_objects.Trainer {
             trainerName:= line[start+startOffset:len(line)-endOffset]
             currentTrainer.TrainerName= trainerName
         } else if strings.Contains(line, ".items") {
-            items := make([]string, 0, 4)
+            items := [4]string{"ITEM_NONE", "ITEM_NONE", "ITEM_NONE", "ITEM_NONE"}
             start := strings.IndexByte(line, '=')
             if start == -1 {
                 panic("Error: Malformatted Trainer struct")
             }
             startOffset := 2 // ={
             endOffset := 2 // },
-            for _, item := range strings.Split(line[start+startOffset:len(line)-endOffset], ",") {
+            for i, item := range strings.Split(line[start+startOffset:len(line)-endOffset], ",") {
                 if !(item ==  "" || item == "\n") {
-                    items = append(items, strings.TrimSpace(item))
-                } 
+                    items[i] = strings.TrimSpace(item)
+                }
             }
             currentTrainer.Items = items
         } else if strings.Contains(line, ".doubleBattle") {

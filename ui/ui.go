@@ -11,7 +11,6 @@ import (
     "fyne.io/fyne/v2/dialog"
     "fyne.io/fyne/v2/theme"
     "fyne.io/fyne/v2/container"
-    xwidget "fyne.io/x/fyne/widget"
     "github.com/geefuoco/trainer_editor/data_objects"
     "github.com/geefuoco/trainer_editor/parsers"
     "strings"
@@ -36,7 +35,7 @@ func RunApp() {
     myWindow.Resize(fyne.NewSize(900, 600))
 
 
-    searchBar := widget.NewEntry()
+    searchBar := NewCustomEntry(0)
     searchBar.SetPlaceHolder("Search")
 
     textWidget := canvas.NewText("Open Pokemon Directory to begin", color.White)
@@ -148,6 +147,10 @@ func createList(listOfTrainers []*data_objects.Trainer) *widget.List {
         })
 
     list.OnSelected = func(id widget.ListItemID) {
+        // Cache the trainer that is currently being viewed
+        // if trainerInfo != nil {
+            // Go through each of the Canvas Objects
+        // }
         selectedTrainer := listOfTrainers[id]
         // ie sParty_Sawyer1
         selectedParty := getTrainerParty(selectedTrainer.GetPartyName())
@@ -156,9 +159,7 @@ func createList(listOfTrainers []*data_objects.Trainer) *widget.List {
             updatedTrainerInfo := createTrainerInfo(selectedTrainer)
             trainerInfo.Add(updatedTrainerInfo)
             trainerInfo.Refresh()
-        } else {
-            fmt.Printf("Could not find party with name: %s\n", selectedParty)
-        }
+        } 
     }
     
     return list
@@ -194,15 +195,31 @@ func createTrainerInfo(trainer *data_objects.Trainer) *fyne.Container{
                 if end > len(aiFlags) {
                     end = len(aiFlags)
                 }
-                check := widget.NewCheckGroup(aiFlags[j:end], func([]string) {})
+                check := widget.NewCheckGroup(aiFlags[j:end], func(opts []string) {
+                    for _, opt := range(opts) {
+                        if !sliceContains(trainer.AiFlags, opt) {
+                            trainer.AiFlags = append(trainer.AiFlags, opt)
+                        }
+
+                    }
+                })
+                if trainer.AiFlags != nil {
+                    check.SetSelected(trainer.AiFlags)
+                }
                 checkGroupHolder.Add(check)
             }
             content.Add(container.NewHScroll(checkGroupHolder))
             continue
         case [4]string:
-            for j:=1; j < 5; j++ {
+            for j:=0; j < 4; j++ {
                 label := widget.NewLabel(fieldName + " " + strconv.Itoa(j))
-                selectBox := xwidget.NewCompletionEntry(items)
+                selectBox := NewCompletionEntry(items)
+                content.Add(label)
+                itemValue := trainer.Items[j]
+                selectBox.SetText(itemValue)
+                selectBox.Id = j
+                // Order matters here. Having this callback set earlier will cause 
+                // A segfault, on behalf of the fyne/x library
                 selectBox.OnChanged = func(s string) {
                     if len(s) == 0 {
                         selectBox.HideCompletion()
@@ -216,10 +233,14 @@ func createTrainerInfo(trainer *data_objects.Trainer) *fyne.Container{
                             filteredItems = append(filteredItems, item)
                         }
                     }
+                    if len(s) >= 9 {
+                        if sliceContains(items, s) {
+                            trainer.Items[selectBox.Id] = s;
+                        }
+                    }
                     selectBox.SetOptions(filteredItems)
                     selectBox.ShowCompletion()
                 }
-                content.Add(label)
                 content.Add(selectBox)
             }
             continue
@@ -227,11 +248,14 @@ func createTrainerInfo(trainer *data_objects.Trainer) *fyne.Container{
             value = field.Interface().(string)
         case bool:
             label := widget.NewLabel(fieldName)
-            radioGroup := widget.NewRadioGroup([]string{"True", "False"}, func(string){})
-            radioGroup.Horizontal = true
-            value = strconv.FormatBool(field.Interface().(bool))
+            check := widget.NewCheck("", func(checked bool){
+                fmt.Printf("%t\n", checked)
+                trainer.DoubleBattle = checked
+            })
+            checked := field.Interface().(bool)
+            check.Checked = checked
             content.Add(label)
-            content.Add(radioGroup)
+            content.Add(check)
             continue
         default:
             value = "Unsupported Type"
@@ -239,14 +263,29 @@ func createTrainerInfo(trainer *data_objects.Trainer) *fyne.Container{
 
 
         label := widget.NewLabel(fieldName)
-        entry := widget.NewEntry()
+        entry := NewCustomEntry(i)
         entry.SetText(value)
+        entry.OnChanged = func(s string) {
+            if len(s) != 0 {
+                structValue.Field(entry.Id).SetString(s)
+            }
+            fmt.Println(trainer)
+        }
 
         content.Add(label)
         content.Add(entry)
     }
 
     return content
+}
+
+func sliceContains(slice []string, item string) bool {
+    for _, i:= range(slice) {
+        if i == item {
+            return true
+        }
+    }
+    return false
 }
 
 func createPartyInfo(trainerParty *data_objects.TrainerParty) *fyne.Container{

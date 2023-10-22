@@ -8,50 +8,6 @@ import (
     "github.com/geefuoco/trainer_editor/data_objects"
 )
 
-// static const struct TrainerMon sParty_Sawyer1[] = {
-//     {
-//     .iv = TRAINER_PARTY_IVS(0, 0, 0, 0, 0, 0),
-//     .lvl = 21,
-//     .species = SPECIES_GEODUDE,
-//     .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-//     .isShiny = FALSE,
-//     }
-// };
-//
-// static const struct TrainerMon sParty_GruntAquaHideout1[] = {
-//     {
-//     .lvl = 32,
-//     .species = SPECIES_POOCHYENA,
-//     }
-// };
-
-// static const struct TrainerMon sParty_Roxanne1[] = {
-//     {
-//     .iv = TRAINER_PARTY_IVS(7, 0, 4, 5, 30, 20),
-//     .lvl = 18,
-//     .species = SPECIES_HONEDGE,
-//     .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-//     .heldItem = ITEM_COLBUR_BERRY,
-//     .moves = {MOVE_AUTOTOMIZE, MOVE_SHADOW_SNEAK, MOVE_METAL_SOUND, MOVE_AERIAL_ACE},
-//     .isShiny = FALSE,
-//     }, 
-//     {
-//     .lvl = 18,
-//     .species = SPECIES_SABLEYE,
-//     .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-//     .heldItem = ITEM_NONE,
-//     .moves = {MOVE_THUNDER_WAVE, MOVE_FAKE_OUT, MOVE_SHADOW_SNEAK, MOVE_AERIAL_ACE},
-//     .ability = ABILITY_PRANKSTER,
-//     .isShiny = FALSE,
-//     }, 
-//     {
-//     .lvl = 18,
-//     .species = SPECIES_MISDREAVUS,
-//     .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-//     .isShiny = TRUE,
-//     }
-// };
-
 func ParseTrainerParties(filepath string) []*data_objects.TrainerParty{
     file, err := os.ReadFile(filepath)
     if err != nil {
@@ -69,14 +25,9 @@ func ParseTrainerParties(filepath string) []*data_objects.TrainerParty{
         currentParty := &data_objects.TrainerParty{}
         currentMon := &data_objects.TrainerMon{}
         for _, line := range(strings.Split(rawTrainerParty, "\n")){ 
-        // for scanner.Scan() {
             line = strings.ReplaceAll(line, " ", "")
             // Incase of some windows BS
             line = strings.ReplaceAll(line, "\r", "")
-
-            // fmt.Println("Line: \n")
-            // fmt.Println(line)
-            // Arbitrary Value here
 
             if strings.Contains(line, "TrainerMon") {
                 start := strings.Index(line, "TrainerMon") + len("TrainerMon")

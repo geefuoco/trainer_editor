@@ -2,7 +2,10 @@ module github.com/geefuoco/trainer_editor
 
 go 1.20
 
-require fyne.io/fyne/v2 v2.4.1
+require (
+	fyne.io/fyne/v2 v2.4.1
+	fyne.io/x/fyne v0.0.0-20231020065621-89b4a4aea27d
+)
 
 require (
 	fyne.io/systray v1.10.1-0.20230722100817-88df1e0ffa9a // indirect
@@ -19,6 +22,7 @@ require (
 	github.com/godbus/dbus/v5 v5.1.0 // indirect
 	github.com/gopherjs/gopherjs v1.17.2 // indirect
 	github.com/jsummers/gobmp v0.0.0-20151104160322-e2ba15ffa76e // indirect
+	github.com/nfnt/resize v0.0.0-20180221191011-83c6a9932646 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/srwiley/oksvg v0.0.0-20221011165216-be6e8873101c // indirect
 	github.com/srwiley/rasterx v0.0.0-20220730225603-2ab79fcdd4ef // indirect

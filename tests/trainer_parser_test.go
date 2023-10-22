@@ -20,7 +20,7 @@ func TestParseTrainers(t *testing.T) {
         return
     }
 
-    expectedTrainer := data_objects.Trainer{
+    expectedTrainer := &data_objects.Trainer{
         TrainerClass:         "TRAINER_CLASS_PKMN_TRAINER_1",
         EncounterMusicGender: "TRAINER_ENCOUNTER_MUSIC_MALE",
         TrainerPic:           "TRAINER_PIC_HIKER",
@@ -50,7 +50,7 @@ func TestParseNoneTrainer(t *testing.T) {
         return
     }
 
-    expectedTrainer := data_objects.Trainer{
+    expectedTrainer := &data_objects.Trainer{
         TrainerClass:         "TRAINER_CLASS_PKMN_TRAINER_1",
         EncounterMusicGender: "TRAINER_ENCOUNTER_MUSIC_MALE",
         TrainerPic:           "TRAINER_PIC_HIKER",

@@ -8,20 +8,6 @@ import (
     "github.com/geefuoco/trainer_editor/data_objects"
 )
 
-const TRAINER_STRUCT_SIZE = 8;
-// This is the format of a Trainer as of Oct 19 2023
-// [TRAINER_JUAN_5] =
-// {
-//     .trainerClass = TRAINER_CLASS_LEADER,
-//     .encounterMusic_gender = TRAINER_ENCOUNTER_MUSIC_MALE,
-//     .trainerPic = TRAINER_PIC_LEADER_JUAN,
-//     .trainerName = _("JUAN"),
-//     .items = {ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_NONE},
-//     .doubleBattle = TRUE,
-//     .aiFlags = AI_FLAG_CHECK_BAD_MOVE | AI_FLAG_TRY_TO_FAINT | AI_FLAG_CHECK_VIABILITY,
-//     .party = TRAINER_PARTY(sParty_Juan5),
-// },
-
 func ParseTrainers(filepath string) []*data_objects.Trainer {
     file, err := os.Open(filepath)
     defer file.Close()
@@ -36,9 +22,6 @@ func ParseTrainers(filepath string) []*data_objects.Trainer {
     for scanner.Scan() {
         line := scanner.Text()
         line = strings.ReplaceAll(line, " ", "")
-        if len(line) < 10 {
-            continue
-        }
         // Strip the line of whitespaces
         if strings.Contains(line, ".trainerClass") {
             if currentTrainer.TrainerClass != "" {
@@ -111,12 +94,13 @@ func ParseTrainers(filepath string) []*data_objects.Trainer {
             }
             startOffset := 1
             endOffset := 1
-            var aiFlags []string
+            // Currently there is only 18 AI Flags Available
+            aiFlags := make([]string, 0, 20)
             if strings.Contains(line, "AI_FLAG") {
                 aiFlags = strings.Split(line[start+startOffset:len(line)-endOffset], "|")
             }
             currentTrainer.AiFlags = aiFlags
-        } else if strings.Contains(line, ".party") {
+        } else if strings.Contains(line, ".party") && !strings.Contains(line, ".partySize"){
             start := strings.IndexByte(line, '=')
             if start == -1 {
                 panic("Error: Malformatted Trainer struct")

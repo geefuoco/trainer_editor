@@ -11,6 +11,7 @@ import (
     "fyne.io/fyne/v2/dialog"
     "fyne.io/fyne/v2/theme"
     "fyne.io/fyne/v2/container"
+    xwidget "fyne.io/x/fyne/widget"
     "github.com/geefuoco/trainer_editor/data_objects"
     "github.com/geefuoco/trainer_editor/parsers"
     "strings"
@@ -25,6 +26,8 @@ var content *fyne.Container
 var grid *fyne.Container
 var trainerInfo *fyne.Container
 var partyInfo *fyne.Container
+var items  []string
+var aiFlags []string
 
 
 func RunApp() {
@@ -49,11 +52,14 @@ func RunApp() {
             list.Refresh() 
         } else {
             for _, trainer := range trainers {
-                if strings.Contains(strings.ToLower(trainer.TrainerClass), str) || strings.Contains(strings.ToLower(trainer.TrainerName), str) {
+                if strings.Contains(strings.ToLower(trainer.TrainerClass), strings.ToLower(str)) ||
+                   strings.Contains(strings.ToLower(trainer.TrainerName), strings.ToLower(str)) {
                     filteredList = append(filteredList, trainer)
                 }
             }
-            list.Refresh()
+            list = createList(filteredList)
+            listContainer.Objects = []fyne.CanvasObject{list}
+            listContainer.Refresh()
         }
 
     }
@@ -68,10 +74,7 @@ func RunApp() {
                 return
             }
             path := uri.Path()
-            trainerPath := buildTrainerPath(path)
-            trainerPartyPath := buildTrainerPartiesPath(path)
-            trainers = parsers.ParseTrainers(trainerPath)
-            trainerParties = parsers.ParseTrainerParties(trainerPartyPath)
+            loadAllData(path)
             if trainers != nil {
                 list = createList(trainers)
                 listContainer.Objects = []fyne.CanvasObject{list}
@@ -110,6 +113,18 @@ func RunApp() {
 	myWindow.ShowAndRun()
 }
 
+func loadAllData(path string) {
+    trainerPath := buildTrainerPath(path)
+    trainerPartyPath := buildTrainerPartiesPath(path)
+    itemPath := buildItemPath(path)
+    aiFlagsPath := buildAiFlagsPath(path)
+
+    trainers = parsers.ParseTrainers(trainerPath)
+    trainerParties = parsers.ParseTrainerParties(trainerPartyPath)
+    items = parsers.ParseItems(itemPath)
+    aiFlags = parsers.ParseAiFlags(aiFlagsPath)
+}
+
 func getTrainerParty(partyName string) *data_objects.TrainerParty {
     for _, party := range(trainerParties) {
         if party.Trainer == partyName {
@@ -134,7 +149,6 @@ func createList(listOfTrainers []*data_objects.Trainer) *widget.List {
 
     list.OnSelected = func(id widget.ListItemID) {
         selectedTrainer := listOfTrainers[id]
-        fmt.Println("Selected Callback")
         // ie sParty_Sawyer1
         selectedParty := getTrainerParty(selectedTrainer.GetPartyName())
         if selectedParty != nil {
@@ -164,17 +178,65 @@ func createTrainerInfo(trainer *data_objects.Trainer) *fyne.Container{
 
         var value string
         switch field.Interface().(type){ 
-        // case [4]string:
-        //     value = fmt.Sprintf(field.Interface().(int))
+        case []string:
+            // Chunk the ai flags
+            // Arbitrary 3 chunks
+            var NUM_COLUMNS int = 3
+            chunks := len(aiFlags) / NUM_COLUMNS
+            if len(aiFlags) % NUM_COLUMNS != 0 {
+                chunks++
+            }
+            label := widget.NewLabel(fieldName)
+            content.Add(label)
+            checkGroupHolder := container.New(layout.NewGridLayout(NUM_COLUMNS))
+            for j:=0; j < len(aiFlags); j+= chunks {
+                end := j + chunks
+                if end > len(aiFlags) {
+                    end = len(aiFlags)
+                }
+                check := widget.NewCheckGroup(aiFlags[j:end], func([]string) {})
+                checkGroupHolder.Add(check)
+            }
+            content.Add(container.NewHScroll(checkGroupHolder))
+            continue
+        case [4]string:
+            for j:=1; j < 5; j++ {
+                label := widget.NewLabel(fieldName + " " + strconv.Itoa(j))
+                selectBox := xwidget.NewCompletionEntry(items)
+                selectBox.OnChanged = func(s string) {
+                    if len(s) == 0 {
+                        selectBox.HideCompletion()
+                        return
+                    }
+                    // Filter the items array
+                    text := selectBox.Text
+                    var filteredItems []string
+                    for _, item := range(items) {
+                        if strings.Contains(item, text) {
+                            filteredItems = append(filteredItems, item)
+                        }
+                    }
+                    selectBox.SetOptions(filteredItems)
+                    selectBox.ShowCompletion()
+                }
+                content.Add(label)
+                content.Add(selectBox)
+            }
+            continue
         case string:
             value = field.Interface().(string)
         case bool:
+            label := widget.NewLabel(fieldName)
+            radioGroup := widget.NewRadioGroup([]string{"True", "False"}, func(string){})
+            radioGroup.Horizontal = true
             value = strconv.FormatBool(field.Interface().(bool))
+            content.Add(label)
+            content.Add(radioGroup)
+            continue
         default:
             value = "Unsupported Type"
         }
 
-        fmt.Println(value)
 
         label := widget.NewLabel(fieldName)
         entry := widget.NewEntry()
@@ -184,6 +246,11 @@ func createTrainerInfo(trainer *data_objects.Trainer) *fyne.Container{
         content.Add(entry)
     }
 
+    return content
+}
+
+func createPartyInfo(trainerParty *data_objects.TrainerParty) *fyne.Container{
+    content := container.New(layout.NewGridLayout(2))
     return content
 }
 
@@ -204,3 +271,22 @@ func buildTrainerPath(path string) string {
     buf.WriteString("/trainers.h")
     return buf.String()
 }
+
+func buildItemPath(path string) string {
+    buf := strings.Builder{}
+    buf.WriteString(path)
+    buf.WriteString("/include")
+    buf.WriteString("/constants")
+    buf.WriteString("/items.h")
+    return buf.String()
+}
+
+func buildAiFlagsPath(path string) string {
+    buf := strings.Builder{}
+    buf.WriteString(path)
+    buf.WriteString("/include")
+    buf.WriteString("/constants")
+    buf.WriteString("/battle_ai.h")
+    return buf.String()
+}
+

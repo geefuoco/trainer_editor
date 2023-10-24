@@ -195,13 +195,10 @@ func createTrainerInfo(trainer *data_objects.Trainer) *fyne.Container{
             continue
         } else if fieldName == "TrainerClass" {
             label := widget.NewLabel(fieldName)
-            entry:= NewCompletionEntry(trainerClasses)
-            entry.SetText(field.Interface().(string))
-            entry.OnChanged = func(s string) {
-                if len(s) >= 3 {
-                    structValue.Field(entry.Id).SetString(s)
-                }
-            }
+            entry:= widget.NewSelect(trainerClasses, func(value string) {
+                trainer.TrainerClass = value
+            })
+            entry.SetSelected(trainer.TrainerClass)
             form.Add(label)
             form.Add(entry)
         } else if fieldName == "TrainerName" {

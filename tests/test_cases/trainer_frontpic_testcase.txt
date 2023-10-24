@@ -1,0 +1,16 @@
+const struct CompressedSpriteSheet gTrainerFrontPicTable[] =
+{
+    TRAINER_SPRITE(HIKER, gTrainerFrontPic_Hiker, TRAINER_PIC_SIZE),
+    TRAINER_SPRITE(AQUA_GRUNT_M, gTrainerFrontPic_AquaGruntM, TRAINER_PIC_SIZE),
+    TRAINER_SPRITE(POKEMON_BREEDER_F, gTrainerFrontPic_PokemonBreederF, TRAINER_PIC_SIZE),
+    TRAINER_SPRITE(COOLTRAINER_M, gTrainerFrontPic_CoolTrainerM, TRAINER_PIC_SIZE),
+    TRAINER_SPRITE(BIRD_KEEPER, gTrainerFrontPic_BirdKeeper, TRAINER_PIC_SIZE),
+    TRAINER_SPRITE(COLLECTOR, gTrainerFrontPic_Collector, TRAINER_PIC_SIZE),
+    TRAINER_SPRITE(AQUA_GRUNT_F, gTrainerFrontPic_AquaGruntF, TRAINER_PIC_SIZE),
+    TRAINER_SPRITE(SWIMMER_M, gTrainerFrontPic_SwimmerM, TRAINER_PIC_SIZE),
+    TRAINER_SPRITE(MAGMA_GRUNT_M, gTrainerFrontPic_MagmaGruntM, TRAINER_PIC_SIZE),
+    TRAINER_SPRITE(EXPERT_M, gTrainerFrontPic_ExpertM, TRAINER_PIC_SIZE),
+    TRAINER_SPRITE(AQUA_ADMIN_M, gTrainerFrontPic_AquaAdminM, TRAINER_PIC_SIZE),
+    TRAINER_SPRITE(BLACK_BELT, gTrainerFrontPic_BlackBelt, TRAINER_PIC_SIZE),
+    TRAINER_SPRITE(AQUA_ADMIN_F, gTrainerFrontPic_AquaAdminF, TRAINER_PIC_SIZE),
+}

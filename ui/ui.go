@@ -27,6 +27,10 @@ var trainerInfo *fyne.Container
 var partyInfo *fyne.Container
 var items  []string
 var aiFlags []string
+var trainerPicMap = make(map[string]string)
+var trainerPics []string
+var trainerClasses []string
+var trainerPic *canvas.Image
 
 
 func RunApp() {
@@ -118,7 +122,20 @@ func loadAllData(path string) {
     itemPath := buildItemPath(path)
     aiFlagsPath := buildAiFlagsPath(path)
 
+    trainergFrontPicPath := buildgTrainerFrontPicPath(path)
+    trainerTrainerSpritePath := buildTrainerSpritePath(path)
+
+    trainerPicMap = parsers.ParseTrainerPics(trainergFrontPicPath, trainerTrainerSpritePath)
+    for k, v := range(trainerPicMap) {
+        trainerPics = append(trainerPics, k)
+        trainerPicMap[k] = path + "/" +  v
+    }
     trainers = parsers.ParseTrainers(trainerPath)
+    for _, t := range(trainers) {
+        if !sliceContains(trainerClasses, t.TrainerClass) {
+            trainerClasses = append(trainerClasses, t.TrainerClass)
+        }
+    }
     trainerParties = parsers.ParseTrainerParties(trainerPartyPath)
     items = parsers.ParseItems(itemPath)
     aiFlags = parsers.ParseAiFlags(aiFlagsPath)
@@ -166,7 +183,8 @@ func createList(listOfTrainers []*data_objects.Trainer) *widget.List {
 }
 
 func createTrainerInfo(trainer *data_objects.Trainer) *fyne.Container{ 
-    content := container.New(layout.NewFormLayout())
+    form := container.New(layout.NewFormLayout())
+    content := container.NewVBox()
 
     structValue := reflect.ValueOf(trainer).Elem()
 
@@ -175,11 +193,102 @@ func createTrainerInfo(trainer *data_objects.Trainer) *fyne.Container{
         fieldName := structValue.Type().Field(i).Name
         if fieldName == "Party" {
             continue
-        }
-
-        var value string
-        switch field.Interface().(type){ 
-        case []string:
+        } else if fieldName == "TrainerClass" {
+            label := widget.NewLabel(fieldName)
+            entry:= NewCompletionEntry(trainerClasses)
+            entry.SetText(field.Interface().(string))
+            entry.OnChanged = func(s string) {
+                if len(s) >= 3 {
+                    structValue.Field(entry.Id).SetString(s)
+                }
+            }
+            form.Add(label)
+            form.Add(entry)
+        } else if fieldName == "TrainerName" {
+            label := widget.NewLabel(fieldName)
+            entry:= NewCustomEntry(i)
+            entry.SetText(field.Interface().(string))
+            entry.OnChanged = func(s string) {
+                if len(s) >= 3 {
+                    structValue.Field(entry.Id).SetString(s)
+                }
+            }
+            form.Add(label)
+            form.Add(entry)
+        } else if fieldName == "EncounterMusicGender" {
+            label := widget.NewLabel(fieldName)
+            value:= widget.NewLabel(field.Interface().(string))
+            form.Add(label)
+            form.Add(value)
+        } else if fieldName == "TrainerPic" {
+            label := widget.NewLabel(fieldName)
+            entry := NewCompletionEntry(trainerPics)
+            trainerPic = canvas.NewImageFromFile(trainerPicMap[trainer.TrainerPic])
+            trainerPic.FillMode = canvas.ImageFillContain
+            trainerPic.SetMinSize(fyne.NewSize(64, 64))
+            entry.SetText(trainer.TrainerPic)
+            entry.OnChanged = func(s string) {
+                if len(s) == 0 {
+                    entry.HideCompletion()
+                    return
+                }
+                var filteredItems []string
+                for _, item := range(trainerPics) {
+                    if strings.Contains(item, s) {
+                        filteredItems = append(filteredItems, item)
+                    }
+                }
+                if len(s) >= 5 {
+                    entry.SetOptions(filteredItems)
+                    entry.ShowCompletion()
+                }
+                _, has := trainerPicMap[s]
+                if has {
+                    trainer.TrainerPic = s
+                    trainerPic = canvas.NewImageFromFile(trainerPicMap[trainer.TrainerPic])
+                    trainerPic.FillMode = canvas.ImageFillContain
+                    trainerPic.SetMinSize(fyne.NewSize(64, 64))
+                    trainerPic.Refresh()
+                }
+            }
+            labelWrapper := container.New(layout.NewFormLayout(), label, entry)
+            wrapper := container.NewVBox(labelWrapper, trainerPic)
+            content.Add(wrapper)
+            continue
+        } else if fieldName == "Items" {
+            for j:=0; j < 4; j++ {
+                label := widget.NewLabel(fieldName + " " + strconv.Itoa(j))
+                selectBox := NewCompletionEntry(items)
+                form.Add(label)
+                itemValue := trainer.Items[j]
+                selectBox.SetText(itemValue)
+                selectBox.Id = j
+                // Order matters here. Having this callback set earlier will cause 
+                // A segfault, on behalf of the fyne/x library
+                selectBox.OnChanged = func(s string) {
+                    if len(s) == 0 {
+                        selectBox.HideCompletion()
+                        return
+                    }
+                    var filteredItems []string
+                    for _, item := range(items) {
+                        if strings.Contains(item, s) {
+                            filteredItems = append(filteredItems, item)
+                        }
+                    }
+                    if len(s) >= 5 {
+                        selectBox.SetOptions(filteredItems)
+                        selectBox.ShowCompletion()
+                    }
+                    if len(s) >= 9 {
+                        if sliceContains(items, s) {
+                            trainer.Items[selectBox.Id] = s;
+                        }
+                    }
+                }
+                form.Add(selectBox)
+            }
+        } else if fieldName == "AiFlags"{
             // Chunk the ai flags
             // Arbitrary 3 chunks
             var NUM_COLUMNS int = 3
@@ -188,7 +297,7 @@ func createTrainerInfo(trainer *data_objects.Trainer) *fyne.Container{
                 chunks++
             }
             label := widget.NewLabel(fieldName)
-            content.Add(label)
+            form.Add(label)
             checkGroupHolder := container.New(layout.NewGridLayout(NUM_COLUMNS))
             for j:=0; j < len(aiFlags); j+= chunks {
                 end := j + chunks
@@ -208,45 +317,8 @@ func createTrainerInfo(trainer *data_objects.Trainer) *fyne.Container{
                 }
                 checkGroupHolder.Add(check)
             }
-            content.Add(container.NewHScroll(checkGroupHolder))
-            continue
-        case [4]string:
-            for j:=0; j < 4; j++ {
-                label := widget.NewLabel(fieldName + " " + strconv.Itoa(j))
-                selectBox := NewCompletionEntry(items)
-                content.Add(label)
-                itemValue := trainer.Items[j]
-                selectBox.SetText(itemValue)
-                selectBox.Id = j
-                // Order matters here. Having this callback set earlier will cause 
-                // A segfault, on behalf of the fyne/x library
-                selectBox.OnChanged = func(s string) {
-                    if len(s) == 0 {
-                        selectBox.HideCompletion()
-                        return
-                    }
-                    // Filter the items array
-                    text := selectBox.Text
-                    var filteredItems []string
-                    for _, item := range(items) {
-                        if strings.Contains(item, text) {
-                            filteredItems = append(filteredItems, item)
-                        }
-                    }
-                    if len(s) >= 9 {
-                        if sliceContains(items, s) {
-                            trainer.Items[selectBox.Id] = s;
-                        }
-                    }
-                    selectBox.SetOptions(filteredItems)
-                    selectBox.ShowCompletion()
-                }
-                content.Add(selectBox)
-            }
-            continue
-        case string:
-            value = field.Interface().(string)
-        case bool:
+            form.Add(container.NewHScroll(checkGroupHolder))
+        } else if fieldName == "DoubleBattle"{
             label := widget.NewLabel(fieldName)
             check := widget.NewCheck("", func(checked bool){
                 fmt.Printf("%t\n", checked)
@@ -254,29 +326,12 @@ func createTrainerInfo(trainer *data_objects.Trainer) *fyne.Container{
             })
             checked := field.Interface().(bool)
             check.Checked = checked
-            content.Add(label)
-            content.Add(check)
-            continue
-        default:
-            value = "Unsupported Type"
+            form.Add(label)
+            form.Add(check)
         }
-
-
-        label := widget.NewLabel(fieldName)
-        entry := NewCustomEntry(i)
-        entry.SetText(value)
-        entry.OnChanged = func(s string) {
-            if len(s) != 0 {
-                structValue.Field(entry.Id).SetString(s)
-            }
-            fmt.Println(trainer)
-        }
-
-        content.Add(label)
-        content.Add(entry)
     }
-
-    return content
+    content.Add(form)
+    return content 
 }
 
 func sliceContains(slice []string, item string) bool {
@@ -329,3 +384,22 @@ func buildAiFlagsPath(path string) string {
     return buf.String()
 }
 
+func buildgTrainerFrontPicPath(path string) string {
+    buf := strings.Builder{}
+    buf.WriteString(path)
+    buf.WriteString("/src")
+    buf.WriteString("/data")
+    buf.WriteString("/graphics")
+    buf.WriteString("/trainers.h")
+    return buf.String()
+}
+
+func buildTrainerSpritePath(path string) string {
+    buf := strings.Builder{}
+    buf.WriteString(path)
+    buf.WriteString("/src")
+    buf.WriteString("/data")
+    buf.WriteString("/trainer_graphics")
+    buf.WriteString("/front_pic_tables.h")
+    return buf.String()
+}

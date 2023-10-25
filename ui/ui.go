@@ -23,6 +23,7 @@ var trainerParties []*data_objects.TrainerParty
 var list *widget.List
 var content *fyne.Container
 var grid *fyne.Container
+var picWrapper *fyne.Container
 var trainerInfo *fyne.Container
 var partyInfo *fyne.Container
 var items  []string
@@ -246,11 +247,13 @@ func createTrainerInfo(trainer *data_objects.Trainer) *fyne.Container{
                     trainerPic.FillMode = canvas.ImageFillContain
                     trainerPic.SetMinSize(fyne.NewSize(64, 64))
                     trainerPic.Refresh()
+                    picWrapper.Objects[1] = trainerPic
+                    picWrapper.Refresh()
                 }
             }
             labelWrapper := container.New(layout.NewFormLayout(), label, entry)
-            wrapper := container.NewVBox(labelWrapper, trainerPic)
-            content.Add(wrapper)
+            picWrapper = container.NewVBox(labelWrapper, trainerPic)
+            content.Add(picWrapper)
             continue
         } else if fieldName == "Items" {
             for j:=0; j < 4; j++ {

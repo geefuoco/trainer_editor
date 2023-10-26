@@ -31,6 +31,7 @@ var aiFlags []string
 var trainerPicMap = make(map[string]string)
 var trainerPics []string
 var trainerClasses []string
+var trainerEncounterMusics []string
 var trainerPic *canvas.Image
 
 
@@ -122,6 +123,7 @@ func loadAllData(path string) {
     trainerPartyPath := buildTrainerPartiesPath(path)
     itemPath := buildItemPath(path)
     aiFlagsPath := buildAiFlagsPath(path)
+    encounterMusicPath := buildTrainerEncounterMusicPath(path)
 
     trainergFrontPicPath := buildgTrainerFrontPicPath(path)
     trainerTrainerSpritePath := buildTrainerSpritePath(path)
@@ -140,6 +142,7 @@ func loadAllData(path string) {
     trainerParties = parsers.ParseTrainerParties(trainerPartyPath)
     items = parsers.ParseItems(itemPath)
     aiFlags = parsers.ParseAiFlags(aiFlagsPath)
+    trainerEncounterMusics = parsers.ParseTrainerEncounterMusic(encounterMusicPath)
 }
 
 func getTrainerParty(partyName string) *data_objects.TrainerParty {
@@ -215,7 +218,10 @@ func createTrainerInfo(trainer *data_objects.Trainer) *fyne.Container{
             form.Add(entry)
         } else if fieldName == "EncounterMusicGender" {
             label := widget.NewLabel(fieldName)
-            value:= widget.NewLabel(field.Interface().(string))
+            value:= widget.NewSelect(trainerEncounterMusics, func(value string) {
+                trainer.EncounterMusicGender = value
+            })
+            value.SetSelected(trainer.EncounterMusicGender)
             form.Add(label)
             form.Add(value)
         } else if fieldName == "TrainerPic" {
@@ -401,5 +407,14 @@ func buildTrainerSpritePath(path string) string {
     buf.WriteString("/data")
     buf.WriteString("/trainer_graphics")
     buf.WriteString("/front_pic_tables.h")
+    return buf.String()
+}
+
+func buildTrainerEncounterMusicPath(path string) string {
+    buf := strings.Builder{}
+    buf.WriteString(path)
+    buf.WriteString("/include")
+    buf.WriteString("/constants")
+    buf.WriteString("/trainers.h")
     return buf.String()
 }

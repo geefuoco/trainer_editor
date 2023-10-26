@@ -1,0 +1,46 @@
+#define TRAINER_CLASS_PARASOL_LADY   0x2c
+#define TRAINER_CLASS_SWIMMER_F      0x2d
+#define TRAINER_CLASS_TWINS          0x2e
+#define TRAINER_CLASS_SAILOR         0x2f
+#define TRAINER_CLASS_COOLTRAINER_2  0x30 // Used for only one trainer.
+#define TRAINER_CLASS_MAGMA_ADMIN    0x31
+#define TRAINER_CLASS_RIVAL          0x32
+#define TRAINER_CLASS_BUG_CATCHER    0x33
+#define TRAINER_CLASS_PKMN_RANGER    0x34
+#define TRAINER_CLASS_MAGMA_LEADER   0x35
+#define TRAINER_CLASS_LASS           0x36
+#define TRAINER_CLASS_YOUNG_COUPLE   0x37
+#define TRAINER_CLASS_OLD_COUPLE     0x38
+#define TRAINER_CLASS_SIS_AND_BRO    0x39
+#define TRAINER_CLASS_SALON_MAIDEN   0x3a
+#define TRAINER_CLASS_DOME_ACE       0x3b
+#define TRAINER_CLASS_PALACE_MAVEN   0x3c
+#define TRAINER_CLASS_ARENA_TYCOON   0x3d
+#define TRAINER_CLASS_FACTORY_HEAD   0x3e
+#define TRAINER_CLASS_PIKE_QUEEN     0x3f
+#define TRAINER_CLASS_PYRAMID_KING   0x40
+#define TRAINER_CLASS_RS_PROTAG      0x41
+#define TRAINER_CLASS_COUNT          0x42
+
+#define TRAINER_ENCOUNTER_MUSIC_MALE         0 // standard male encounter music
+#define TRAINER_ENCOUNTER_MUSIC_FEMALE       1 // standard female encounter music
+#define TRAINER_ENCOUNTER_MUSIC_GIRL         2 // used for male Tubers and Young Couples too
+#define TRAINER_ENCOUNTER_MUSIC_SUSPICIOUS   3
+#define TRAINER_ENCOUNTER_MUSIC_INTENSE      4
+#define TRAINER_ENCOUNTER_MUSIC_COOL         5
+#define TRAINER_ENCOUNTER_MUSIC_AQUA         6
+#define TRAINER_ENCOUNTER_MUSIC_MAGMA        7
+#define TRAINER_ENCOUNTER_MUSIC_SWIMMER      8
+#define TRAINER_ENCOUNTER_MUSIC_TWINS        9 // used for other trainer classes too
+#define TRAINER_ENCOUNTER_MUSIC_ELITE_FOUR  10
+#define TRAINER_ENCOUNTER_MUSIC_HIKER       11 // used for other trainer classes too
+#define TRAINER_ENCOUNTER_MUSIC_INTERVIEWER 12
+#define TRAINER_ENCOUNTER_MUSIC_RICH        13 // Rich Boys and Gentlemen
+
+#define F_TRAINER_FEMALE (1 << 7)
+
+// Trainer party defines
+#define TRAINER_MON_MALE    1
+#define TRAINER_MON_FEMALE  2
+
+#endif  // GUARD_TRAINERS_H

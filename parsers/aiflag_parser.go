@@ -29,7 +29,7 @@ func ParseAiFlags(filepath string) []string {
         } else if strings.Contains(line, "AI_FLAG") {
             start := strings.Index(line, "AI_FLAG")
             var index uint = 2
-            endOffset := getNthIndex(line, index, ' ')
+            endOffset := GetNthIndex(line, index, ' ')
             if endOffset == -1 {
                 fmt.Printf("Could not find %d index of ' ' in line: %s\n", index, line)
                 continue
@@ -42,7 +42,7 @@ func ParseAiFlags(filepath string) []string {
     return flags
 }
 
-func getNthIndex(str string, index uint, query byte) int {
+func GetNthIndex(str string, index uint, query byte) int {
     var count uint
     for i := range(str) {
         if count > index {

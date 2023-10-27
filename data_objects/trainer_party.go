@@ -21,6 +21,18 @@ type TrainerMon struct {
     IsShiny bool
 }
 
+func TemplateMon() *TrainerMon {
+    return &TrainerMon{
+            Iv: [6]uint64{0, 0, 0, 0, 0, 0},
+            Ev: [6]uint64{0, 0, 0, 0, 0, 0},
+            Lvl: 1,
+            Species: "SPECIES_UNKNOWN",
+            HeldItem: "ITEM_NONE",
+            Moves: [4]string{"MOVE_HIDDEN_POWER", "MOVE_NONE", "MOVE_NONE", "MOVE_NONE"},
+            IsShiny: false,
+    }
+}
+
 func (t* TrainerParty) String() string {
     var b strings.Builder
     b.WriteString("TrainerParty: \n")

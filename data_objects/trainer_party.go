@@ -26,9 +26,9 @@ func TemplateMon() *TrainerMon {
             Iv: [6]uint64{0, 0, 0, 0, 0, 0},
             Ev: [6]uint64{0, 0, 0, 0, 0, 0},
             Lvl: 1,
-            Species: "SPECIES_UNKNOWN",
+            Species: "SPECIES_NONE",
             HeldItem: "ITEM_NONE",
-            Moves: [4]string{"MOVE_HIDDEN_POWER", "MOVE_NONE", "MOVE_NONE", "MOVE_NONE"},
+            Moves: [4]string{"MOVE_NONE", "MOVE_NONE", "MOVE_NONE", "MOVE_NONE"},
             IsShiny: false,
     }
 }

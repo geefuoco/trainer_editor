@@ -8,7 +8,7 @@ import (
 
 func TestPokemonPicsParser(t *testing.T) {
 
-    input1 := "test_cases/pokemon_species_parser_testcase.txt"
+    input1 := "test_cases/pokemon_species_testcase.txt"
     input2 := "test_cases/pokemon_pic_parser_testcase.txt"
 
 

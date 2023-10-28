@@ -49,7 +49,7 @@ func RunApp() {
     myWindow.Resize(fyne.NewSize(WIDTH, HEIGHT))
 
 
-    searchBar := NewCustomEntry(0)
+    searchBar := widget.NewEntry()
     searchBar.SetPlaceHolder("Search")
 
     textWidget := canvas.NewText("Open Pokemon Directory to begin", color.White)
@@ -153,7 +153,7 @@ func loadAllData(path string) {
     }
     trainers = parsers.ParseTrainers(trainerPath)
     for _, t := range(trainers) {
-        if !sliceContains(trainerClasses, t.TrainerClass) {
+        if !SliceContains(trainerClasses, t.TrainerClass) {
             trainerClasses = append(trainerClasses, t.TrainerClass)
         }
     }
@@ -207,7 +207,7 @@ func createList(listOfTrainers []*data_objects.Trainer) *widget.List {
 }
 
 
-func sliceContains(slice []string, item string) bool {
+func SliceContains(slice []string, item string) bool {
     for _, i:= range(slice) {
         if i == item {
             return true
@@ -261,7 +261,7 @@ func createPartyInfo(trainerParty *data_objects.TrainerParty) *fyne.Container{
         pokemonPic.Refresh()
         pokemonPicWrapper.Objects[0] = pokemonPic
         pokemonPicWrapper.Refresh()
-        movesForm = createMovesForm(trainerMonList)
+        movesForm = createMovesForm(mon)
         infoForm = createPokemonInfoForm(trainerMonList)
         // Should always be in the bottom left (3rd) position
         grid.Objects[2] = movesForm
@@ -299,7 +299,8 @@ func createPartyInfo(trainerParty *data_objects.TrainerParty) *fyne.Container{
     leftPanel.SetOffset(0.1)
 
 
-    movesForm = createMovesForm(trainerMonList)
+    currentMon := trainerMonList[selectedMonIndex]
+    movesForm = createMovesForm(currentMon)
     infoForm = createPokemonInfoForm(trainerMonList)
     pokemonPicWrapper = container.NewMax(pokemonPic)
     grid = container.New(layout.NewGridLayout(2), leftPanel, pokemonPicWrapper, movesForm, infoForm)
@@ -315,23 +316,9 @@ func createPokemonInfoForm(trainerMonList []*data_objects.TrainerMon) *fyne.Cont
     // Species 
     mon := trainerMonList[selectedMonIndex]
     label := widget.NewLabel("Species")
-    speciesSelectBox := NewCompletionEntry(species)
+    speciesSelectBox := widget.NewSelectEntry(species)
     speciesSelectBox.SetText(mon.Species)
     speciesSelectBox.OnChanged = func(s string) {
-        if len(s) == 0 {
-            speciesSelectBox.HideCompletion()
-            return
-        }
-        var filteredItems []string
-        for _, item := range(species) {
-            if strings.Contains(item, s) {
-                filteredItems = append(filteredItems, item)
-            }
-        }
-        if len(s) >= 5 {
-            speciesSelectBox.SetOptions(filteredItems)
-            speciesSelectBox.ShowCompletion()
-        }
         if len(s) >= 9 {
             // Utilize the map that has species as keys
             value, has := pokemonPicMap[s]
@@ -366,25 +353,11 @@ func createPokemonInfoForm(trainerMonList []*data_objects.TrainerMon) *fyne.Cont
     form.Add(levelEntry)
     // HeldItem
     label = widget.NewLabel("Held Item")
-    heldItemSelectBox := NewCompletionEntry(items)
+    heldItemSelectBox := widget.NewSelectEntry(items)
     heldItemSelectBox.SetText(mon.HeldItem)
     heldItemSelectBox.OnChanged = func(s string) {
-        if len(s) == 0 {
-            heldItemSelectBox.HideCompletion()
-            return
-        }
-        var filteredItems []string
-        for _, item := range(items) {
-            if strings.Contains(item, s) {
-                filteredItems = append(filteredItems, item)
-            }
-        }
-        if len(s) >= 5 {
-            heldItemSelectBox.SetOptions(filteredItems)
-            heldItemSelectBox.ShowCompletion()
-        }
         if len(s) >= 9 {
-            if sliceContains(items, s) {
+            if SliceContains(items, s) {
                 mon.HeldItem = s;
             }
         }
@@ -402,47 +375,73 @@ func createPokemonInfoForm(trainerMonList []*data_objects.TrainerMon) *fyne.Cont
 
     // Abilitiy
     // label = widget.NewLabel("Ability")
-    // selectBox = NewCompletionEntry(abilities)
+    // selectBox = widget.NewSelectEntry(abilities)
     // form.Add(label)
     // form.Add(selectBox)
     // selectBox.SetText(mon.Ability)
     return form
 }
 
-func createMovesForm(trainerMonList []*data_objects.TrainerMon) *fyne.Container {
+func createMovesForm(mon *data_objects.TrainerMon) *fyne.Container {
     form := container.New(layout.NewFormLayout())
-    for j:=0; j < 4; j++ {
-        label := widget.NewLabel("MOVE " + strconv.Itoa(j))
-        selectBox := NewCompletionEntry(moves)
-        form.Add(label)
-        itemValue := trainerMonList[selectedMonIndex].Moves[j]
-        selectBox.SetText(itemValue)
-        selectBox.Id = j
-        // Order matters here. Having this callback set earlier will cause 
-        // A segfault, on behalf of the fyne/x library
-        selectBox.OnChanged = func(s string) {
-            if len(s) == 0 {
-                selectBox.HideCompletion()
-                return
-            }
-            var filteredItems []string
-            for _, item := range(moves) {
-                if strings.Contains(item, s) {
-                    filteredItems = append(filteredItems, item)
-                }
-            }
-            if len(s) >= 5 {
-                selectBox.SetOptions(filteredItems)
-                selectBox.ShowCompletion()
-            }
-            if len(s) >= len("MOVE_CUT") {
-                if sliceContains(moves, s) {
-                    trainerMonList[selectedMonIndex].Moves[selectBox.Id] = s;
-                }
+    // Item 0
+    moveLabel0 := widget.NewLabel("ITEM 0")
+    moveSelectBox0 := widget.NewSelectEntry(moves)
+    form.Add(moveLabel0)
+    moveValue := mon.Moves[0]
+    moveSelectBox0.SetText(moveValue)
+    moveSelectBox0.OnChanged = func(s string) {
+        if len(s) >= len("MOVE_CUT") {
+            if SliceContains(moves, s) {
+                mon.Moves[0] = s;
             }
         }
-        form.Add(selectBox)
     }
+    form.Add(moveSelectBox0)
+
+    // Item 1
+    moveLabel1 := widget.NewLabel("ITEM 1")
+    moveSelectBox1 := widget.NewSelectEntry(moves)
+    form.Add(moveLabel1)
+    moveValue = mon.Moves[1]
+    moveSelectBox1.SetText(moveValue)
+    moveSelectBox1.OnChanged = func(s string) {
+        if len(s) >= len("MOVE_CUT") {
+            if SliceContains(moves, s) {
+                mon.Moves[1] = s;
+            }
+        }
+    }
+    form.Add(moveSelectBox1)
+
+    // Item 2
+    moveLabel2 := widget.NewLabel("ITEM 2")
+    moveSelectBox2 := widget.NewSelectEntry(moves)
+    form.Add(moveLabel2)
+    moveValue = mon.Moves[2]
+    moveSelectBox2.SetText(moveValue)
+    moveSelectBox2.OnChanged = func(s string) {
+        if len(s) >= len("MOVE_CUT") {
+            if SliceContains(moves, s) {
+                mon.Moves[2] = s;
+            }
+        }
+    }
+    form.Add(moveSelectBox2)
+    // Item 3
+    moveLabel3 := widget.NewLabel("ITEM 3")
+    moveSelectBox3 := widget.NewSelectEntry(moves)
+    form.Add(moveLabel3)
+    moveValue = mon.Moves[3]
+    moveSelectBox3.SetText(moveValue)
+    moveSelectBox3.OnChanged = func(s string) {
+        if len(s) >= len("MOVE_CUT") {
+            if SliceContains(moves, s) {
+                mon.Moves[3] = s;
+            } 
+        }
+    }
+    form.Add(moveSelectBox3)
     return form
 }
 

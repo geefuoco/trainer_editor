@@ -1,6 +1,7 @@
 package ui
 
-import ( "image/color"
+import ( 
+    "image/color"
     "fmt"
     "fyne.io/fyne/v2"
     "fyne.io/fyne/v2/app"
@@ -9,10 +10,10 @@ import ( "image/color"
     "fyne.io/fyne/v2/layout"
     "fyne.io/fyne/v2/dialog"
     "fyne.io/fyne/v2/theme"
-    "fyne.io/fyne/v2/data/binding"
     "fyne.io/fyne/v2/container"
     "github.com/geefuoco/trainer_editor/data_objects"
     "github.com/geefuoco/trainer_editor/parsers"
+    "strconv"
     "strings"
 )
 
@@ -32,9 +33,11 @@ var trainerClasses []string
 var trainerEncounterMusics []string
 var trainerPic *canvas.Image
 
+var pokemonPicMap = make(map[string]string)
+var pokemonPicWrapper *fyne.Container
 var pokemonPic *canvas.Image
-var moveList []string
-var partyList binding.UntypedList
+var moves []string
+var selectedMonIndex widget.ListItemID
 
 const HEIGHT = 900
 const WIDTH = 1200
@@ -128,6 +131,15 @@ func loadAllData(path string) {
     itemPath := buildItemPath(path)
     aiFlagsPath := buildAiFlagsPath(path)
     encounterMusicPath := buildTrainerEncounterMusicPath(path)
+    movesPath := buildMovesPath(path)
+    
+    pokemonSpeciesPath := buildPokemonSpeciesPath(path)
+    pokemonSpritePath := buildPokemonSpritePath(path)
+
+    pokemonPicMap = parsers.ParsePokemonPics(pokemonSpeciesPath, pokemonSpritePath)
+    for k, v := range(pokemonPicMap) {
+        pokemonPicMap[k] = path + "/" +  v
+    }
 
     trainergFrontPicPath := buildgTrainerFrontPicPath(path)
     trainerTrainerSpritePath := buildTrainerSpritePath(path)
@@ -147,6 +159,7 @@ func loadAllData(path string) {
     items = parsers.ParseItems(itemPath)
     aiFlags = parsers.ParseAiFlags(aiFlagsPath)
     trainerEncounterMusics = parsers.ParseTrainerEncounterMusic(encounterMusicPath)
+    moves = parsers.ParseMoves(movesPath)
 }
 
 func getTrainerParty(partyName string) *data_objects.TrainerParty {
@@ -202,6 +215,8 @@ func sliceContains(slice []string, item string) bool {
 
 func createPartyInfo(trainerParty *data_objects.TrainerParty) *fyne.Container{
     content := container.NewMax()
+    var movesForm *fyne.Container
+    var grid *fyne.Container
 
     trainerMonList := trainerParty.Party
 
@@ -217,17 +232,41 @@ func createPartyInfo(trainerParty *data_objects.TrainerParty) *fyne.Container{
         label.SetText(mon.Species)
     })
 
+    monList.OnSelected = func(i widget.ListItemID) {
+        selectedMonIndex = i
+        mon := trainerMonList[i]
+        value, has := pokemonPicMap[mon.Species]
+        if !has {
+            fmt.Println("Error: '" + mon.Species + "' was not in the Pokemon Pic Map")
+            pokemonPic = canvas.NewImageFromFile(pokemonPicMap["SPECIES_NONE"])
+        } else {
+            pokemonPic = canvas.NewImageFromFile(value)
+        }
+        pokemonPic.FillMode = canvas.ImageFillContain
+        pokemonPic.SetMinSize(fyne.NewSize(64, 64))
+        pokemonPic.Refresh()
+        pokemonPicWrapper.Objects[0] = pokemonPic
+        pokemonPicWrapper.Refresh()
+        movesForm = createMovesForm(trainerMonList)
+        // Should always be in the bottom left (3rd) position
+        grid.Objects[2] = movesForm
+    }
+
+
     add := widget.NewButton("Append", func() {
         if (len(trainerMonList) + 1) <= 6 { 
             val := data_objects.TemplateMon()
             trainerMonList = append(trainerMonList, val)
+            trainerParty.Party = trainerMonList
             monList.Refresh()
         }
     })
 
     remove := widget.NewButton("Remove", func() {
         if (len(trainerMonList)-1) >= 1 {
-            fmt.Println("Removing pokemon")
+            trainerMonList = append(trainerMonList[:selectedMonIndex], trainerMonList[selectedMonIndex+1:]...)
+            trainerParty.Party = trainerMonList
+            monList.Select(len(trainerMonList)-1)
             monList.Refresh()
         }
     })
@@ -237,11 +276,80 @@ func createPartyInfo(trainerParty *data_objects.TrainerParty) *fyne.Container{
     leftPanel := container.NewVSplit(buttons, monListContainer)
     leftPanel.SetOffset(0.1)
 
-    // pokemonPic = canvas.NewImageFromFile()
-    // pokemonPic.FillMode = canvas.ImageFillContain
-    // pokemonPic.SetMinSize(fyne.NewSize(64, 64))
 
-    grid := container.New(layout.NewGridLayout(2), leftPanel, layout.NewSpacer())
+    movesForm = createMovesForm(trainerMonList)
+    pokemonPicWrapper = container.NewMax(pokemonPic)
+    grid = container.New(layout.NewGridLayout(2), leftPanel, pokemonPicWrapper, movesForm)
+
+    // Make sure only to select once all other containers have been defined
+    monList.Select(0)
     content.Add(grid)
     return content
+}
+
+func createMovesForm(trainerMonList []*data_objects.TrainerMon) *fyne.Container {
+    fmt.Printf("making new move list for index: %d\n", selectedMonIndex)
+    form := container.New(layout.NewFormLayout())
+    for j:=0; j < 4; j++ {
+        label := widget.NewLabel("MOVE " + strconv.Itoa(j))
+        selectBox := NewCompletionEntry(moves)
+        form.Add(label)
+        itemValue := trainerMonList[selectedMonIndex].Moves[j]
+        selectBox.SetText(itemValue)
+        selectBox.Id = j
+        // Order matters here. Having this callback set earlier will cause 
+        // A segfault, on behalf of the fyne/x library
+        selectBox.OnChanged = func(s string) {
+            if len(s) == 0 {
+                selectBox.HideCompletion()
+                return
+            }
+            var filteredItems []string
+            for _, item := range(moves) {
+                if strings.Contains(item, s) {
+                    filteredItems = append(filteredItems, item)
+                }
+            }
+            if len(s) >= 5 {
+                selectBox.SetOptions(filteredItems)
+                selectBox.ShowCompletion()
+            }
+            if len(s) >= len("MOVE_CUT") {
+                if sliceContains(moves, s) {
+                    trainerMonList[selectedMonIndex].Moves[selectBox.Id] = s;
+                }
+            }
+        }
+        form.Add(selectBox)
+    }
+    return form
+}
+
+func buildPokemonSpeciesPath(path string) string {
+    buf := strings.Builder{}
+    buf.WriteString(path)
+    buf.WriteString("/src")
+    buf.WriteString("/data")
+    buf.WriteString("/pokemon_graphics")
+    buf.WriteString("/front_pic_table.h")
+    return buf.String()
+}
+
+func buildPokemonSpritePath(path string) string {
+    buf := strings.Builder{}
+    buf.WriteString(path)
+    buf.WriteString("/src")
+    buf.WriteString("/data")
+    buf.WriteString("/graphics")
+    buf.WriteString("/pokemon.h")
+    return buf.String()
+}
+
+func buildMovesPath(path string) string {
+    buf := strings.Builder{}
+    buf.WriteString(path)
+    buf.WriteString("/include")
+    buf.WriteString("/constants")
+    buf.WriteString("/moves.h")
+    return buf.String()
 }

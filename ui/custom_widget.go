@@ -196,7 +196,6 @@ func (n *navigableList) SetOptions(items []string) {
 func (n *navigableList) TypedKey(event *fyne.KeyEvent) {
 	switch event.Name {
 	case fyne.KeyEscape:
-    case fyne.KeyBackspace:
         n.navigating = false
 		n.hide()
         return

@@ -37,6 +37,7 @@ var pokemonPicMap = make(map[string]string)
 var pokemonPicWrapper *fyne.Container
 var pokemonPic *canvas.Image
 var moves []string
+var species []string
 var selectedMonIndex widget.ListItemID
 
 const HEIGHT = 900
@@ -139,6 +140,7 @@ func loadAllData(path string) {
     pokemonPicMap = parsers.ParsePokemonPics(pokemonSpeciesPath, pokemonSpritePath)
     for k, v := range(pokemonPicMap) {
         pokemonPicMap[k] = path + "/" +  v
+        species = append(species, k)
     }
 
     trainergFrontPicPath := buildgTrainerFrontPicPath(path)
@@ -187,6 +189,7 @@ func createList(listOfTrainers []*data_objects.Trainer) *widget.List {
     list.OnSelected = func(id widget.ListItemID) {
         selectedTrainer := listOfTrainers[id]
         selectedParty := getTrainerParty(selectedTrainer.GetPartyName())
+        selectedMonIndex = 0
         if selectedParty != nil {
             trainerInfo.Objects = []fyne.CanvasObject{}
             updatedTrainerInfo := createTrainerInfo(selectedTrainer)
@@ -213,9 +216,20 @@ func sliceContains(slice []string, item string) bool {
     return false
 }
 
+const (
+    PARTY_LIST = iota
+    SPRITE
+    STATS
+    MOVES
+    MAIN
+    IVS
+    EVS
+)
+
 func createPartyInfo(trainerParty *data_objects.TrainerParty) *fyne.Container{
     content := container.NewMax()
     var movesForm *fyne.Container
+    var infoForm *fyne.Container
     var grid *fyne.Container
 
     trainerMonList := trainerParty.Party
@@ -248,8 +262,10 @@ func createPartyInfo(trainerParty *data_objects.TrainerParty) *fyne.Container{
         pokemonPicWrapper.Objects[0] = pokemonPic
         pokemonPicWrapper.Refresh()
         movesForm = createMovesForm(trainerMonList)
+        infoForm = createPokemonInfoForm(trainerMonList)
         // Should always be in the bottom left (3rd) position
         grid.Objects[2] = movesForm
+        grid.Objects[3] = infoForm
     }
 
 
@@ -266,8 +282,14 @@ func createPartyInfo(trainerParty *data_objects.TrainerParty) *fyne.Container{
         if (len(trainerMonList)-1) >= 1 {
             trainerMonList = append(trainerMonList[:selectedMonIndex], trainerMonList[selectedMonIndex+1:]...)
             trainerParty.Party = trainerMonList
-            monList.Select(len(trainerMonList)-1)
+            var selectIdx int
+            if selectedMonIndex == 0 {
+                selectIdx = 0
+            } else {
+                selectIdx = selectedMonIndex-1
+            }
             monList.Refresh()
+            monList.OnSelected(selectIdx)
         }
     })
 
@@ -278,8 +300,9 @@ func createPartyInfo(trainerParty *data_objects.TrainerParty) *fyne.Container{
 
 
     movesForm = createMovesForm(trainerMonList)
+    infoForm = createPokemonInfoForm(trainerMonList)
     pokemonPicWrapper = container.NewMax(pokemonPic)
-    grid = container.New(layout.NewGridLayout(2), leftPanel, pokemonPicWrapper, movesForm)
+    grid = container.New(layout.NewGridLayout(2), leftPanel, pokemonPicWrapper, movesForm, infoForm)
 
     // Make sure only to select once all other containers have been defined
     monList.Select(0)
@@ -287,8 +310,106 @@ func createPartyInfo(trainerParty *data_objects.TrainerParty) *fyne.Container{
     return content
 }
 
+func createPokemonInfoForm(trainerMonList []*data_objects.TrainerMon) *fyne.Container {
+    form := container.New(layout.NewFormLayout())
+    // Species 
+    mon := trainerMonList[selectedMonIndex]
+    label := widget.NewLabel("Species")
+    speciesSelectBox := NewCompletionEntry(species)
+    speciesSelectBox.SetText(mon.Species)
+    speciesSelectBox.OnChanged = func(s string) {
+        if len(s) == 0 {
+            speciesSelectBox.HideCompletion()
+            return
+        }
+        var filteredItems []string
+        for _, item := range(species) {
+            if strings.Contains(item, s) {
+                filteredItems = append(filteredItems, item)
+            }
+        }
+        if len(s) >= 5 {
+            speciesSelectBox.SetOptions(filteredItems)
+            speciesSelectBox.ShowCompletion()
+        }
+        if len(s) >= 9 {
+            // Utilize the map that has species as keys
+            value, has := pokemonPicMap[s]
+            if has {
+                mon.Species = s;
+                pokemonPic = canvas.NewImageFromFile(value)
+                pokemonPic.FillMode = canvas.ImageFillContain
+                pokemonPic.SetMinSize(fyne.NewSize(64, 64))
+                pokemonPic.Refresh()
+                pokemonPicWrapper.Objects[0] = pokemonPic
+                pokemonPicWrapper.Refresh()
+            }
+        }
+    }
+    form.Add(label)
+    form.Add(speciesSelectBox)
+    // Level
+    label = widget.NewLabel("Level")
+    levelEntry := widget.NewEntry()
+    levelEntry.SetText(strconv.FormatUint(mon.Lvl, 10))
+    levelEntry.OnChanged = func(s string) {
+        lvl, err := strconv.ParseUint(s, 10, 64)
+        if err != nil {
+            fmt.Printf("Error: could not parse '%s' to int\n", s)
+            return
+        }
+        if lvl > 0 && lvl <= 100 {
+            mon.Lvl = lvl
+        }
+    }
+    form.Add(label)
+    form.Add(levelEntry)
+    // HeldItem
+    label = widget.NewLabel("Held Item")
+    heldItemSelectBox := NewCompletionEntry(items)
+    heldItemSelectBox.SetText(mon.HeldItem)
+    heldItemSelectBox.OnChanged = func(s string) {
+        if len(s) == 0 {
+            heldItemSelectBox.HideCompletion()
+            return
+        }
+        var filteredItems []string
+        for _, item := range(items) {
+            if strings.Contains(item, s) {
+                filteredItems = append(filteredItems, item)
+            }
+        }
+        if len(s) >= 5 {
+            heldItemSelectBox.SetOptions(filteredItems)
+            heldItemSelectBox.ShowCompletion()
+        }
+        if len(s) >= 9 {
+            if sliceContains(items, s) {
+                mon.HeldItem = s;
+            }
+        }
+    }
+    form.Add(label)
+    form.Add(heldItemSelectBox)
+    // Shiny
+    label = widget.NewLabel("Shiny")
+    check := widget.NewCheck("", func(val bool) {
+        mon.IsShiny = val
+    })
+    check.Checked = mon.IsShiny
+    form.Add(label)
+    form.Add(check)
+
+    // Abilitiy
+    // label = widget.NewLabel("Ability")
+    // selectBox = NewCompletionEntry(abilities)
+    // form.Add(label)
+    // form.Add(selectBox)
+    // selectBox.SetText(mon.Ability)
+    return form
+}
+
 func createMovesForm(trainerMonList []*data_objects.TrainerMon) *fyne.Container {
-    fmt.Printf("making new move list for index: %d\n", selectedMonIndex)
     form := container.New(layout.NewFormLayout())
     for j:=0; j < 4; j++ {
         label := widget.NewLabel("MOVE " + strconv.Itoa(j))

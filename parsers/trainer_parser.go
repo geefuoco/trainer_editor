@@ -23,11 +23,15 @@ func ParseTrainers(filepath string) []*data_objects.Trainer {
         line := scanner.Text()
         line = strings.ReplaceAll(line, " ", "")
         // Strip the line of whitespaces
-        if strings.Contains(line, ".trainerClass") {
-            if currentTrainer.TrainerClass != "" {
+        if strings.Contains(line, "[TRAINER_") {
+            if currentTrainer.TrainerKey != "" {
                 trainers = append(trainers, currentTrainer)
+                currentTrainer = &data_objects.Trainer{}
             }
-            currentTrainer = &data_objects.Trainer{}
+            start := strings.Index(line, "TRAINER")
+            end := len(line) - 2 // ]=
+            currentTrainer.TrainerKey = line[start:end]
+        }else if strings.Contains(line, ".trainerClass") {
             start := strings.IndexByte(line, '=')
             if start == -1 {
                 panic("Error: Malformatted Trainer struct")
@@ -35,7 +39,6 @@ func ParseTrainers(filepath string) []*data_objects.Trainer {
             startOffset := 1
             trainerClass := line[start+startOffset:len(line)-1]
             currentTrainer.TrainerClass = trainerClass
-            continue
         } else if strings.Contains(line, ".encounterMusic_gender") {
             start := strings.IndexByte(line, '=')
             if start == -1 {

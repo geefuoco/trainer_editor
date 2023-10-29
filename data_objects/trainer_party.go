@@ -36,7 +36,7 @@ func TemplateMon() *TrainerMon {
 
 func (mon *TrainerMon) String() string {
     templateMon := TemplateMon()
-    padding := "        "
+    padding := "    "
     var buf strings.Builder
     buf.WriteString(padding)
     buf.WriteString("{\n")
@@ -127,8 +127,6 @@ func (mon *TrainerMon) CalculateIvTotal() int {
 
 func (t* TrainerParty) String() string {
     var b strings.Builder
-    padding := "    "
-    b.WriteString(padding)
     b.WriteString("static const struct TrainerMon ")
     b.WriteString(t.Trainer + "[] = {\n")
     for i, mon := range(t.Party) {
@@ -138,7 +136,6 @@ func (t* TrainerParty) String() string {
         }
     }
     b.WriteString("\n")
-    b.WriteString(padding)
     b.WriteString("};\n")
     return b.String()
 }

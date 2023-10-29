@@ -21,18 +21,23 @@ func TestParseTrainers(t *testing.T) {
     }
 
     expectedTrainer := &data_objects.Trainer{
-        TrainerClass:         "TRAINER_CLASS_PKMN_TRAINER_1",
+        TrainerKey:           "TRAINER_SAWYER_1",
+        TrainerClass:         "TRAINER_CLASS_HIKER",
         EncounterMusicGender: "TRAINER_ENCOUNTER_MUSIC_MALE",
         TrainerPic:           "TRAINER_PIC_HIKER",
-        TrainerName:          "Trainer1",
+        TrainerName:          "SAWYER",
         Items:                [4]string{"ITEM_NONE","ITEM_NONE", "ITEM_NONE", "ITEM_NONE"},
         DoubleBattle:         true,
         AiFlags:              []string{"AI_FLAG_A", "AI_FLAG_B"},
-        Party:                "TRAINER_PARTY(myparty)",
+        Party:                "TRAINER_PARTY(sParty_Sawyer1)",
     }
 
 
     if !(reflect.DeepEqual(trainers[0], expectedTrainer)) {
+        t.Log("Expected\n")
+        t.Log(expectedTrainer)
+        t.Log("Actual\n")
+        t.Log(trainers[0].String())
         t.Error("Trainers were not Equal")
     }
 }
@@ -51,6 +56,7 @@ func TestParseNoneTrainer(t *testing.T) {
     }
 
     expectedTrainer := &data_objects.Trainer{
+        TrainerKey:           "TRAINER_NONE",
         TrainerClass:         "TRAINER_CLASS_PKMN_TRAINER_1",
         EncounterMusicGender: "TRAINER_ENCOUNTER_MUSIC_MALE",
         TrainerPic:           "TRAINER_PIC_HIKER",

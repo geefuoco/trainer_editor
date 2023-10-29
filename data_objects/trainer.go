@@ -5,6 +5,7 @@ import (
 )
 
 type Trainer struct{
+    TrainerKey string
     TrainerClass string
     EncounterMusicGender string
     TrainerPic string
@@ -24,41 +25,74 @@ func (t* Trainer) GetPartyName() string {
 
 func (t *Trainer) String() string {
     var b strings.Builder
-    b.WriteString("Trainer: \n")
-    b.WriteString("  TrainerClass: ")
-    b.WriteString(t.TrainerClass + "\n")
-    b.WriteString("  EncounterMusicGender: ")
-    b.WriteString(t.EncounterMusicGender+ "\n")
-    b.WriteString("  TrainerPic: ")
-    b.WriteString(t.TrainerPic + "\n")
-    b.WriteString("  TrainerName: ")
-    b.WriteString(t.TrainerName+ "\n")
-    b.WriteString("  TrainerName: ")
-    if len(t.Items) == 0 {
-        b.WriteString("  Items: {}\n")
-    } else {
-        b.WriteString("  Items: {\n")
-        for i := range(t.Items) {
-            b.WriteString("    " + t.Items[i] + "\n")
+    padding := "    "
+    // Trainer Key
+    b.WriteString(padding)
+    b.WriteString("[" + t.TrainerKey + "] =\n")
+    b.WriteString(padding)
+    b.WriteString("{\n")
+    // Trainer Class
+    b.WriteString(padding)
+    b.WriteString(padding)
+    b.WriteString(".trainerClass = ")
+    b.WriteString(t.TrainerClass + ",\n")
+    // Encounter Music
+    b.WriteString(padding)
+    b.WriteString(padding)
+    b.WriteString(".encounterMusic_gender = ")
+    b.WriteString(t.EncounterMusicGender+ ",\n")
+    // Trainer Pic
+    b.WriteString(padding)
+    b.WriteString(padding)
+    b.WriteString(".trainerPic = ")
+    b.WriteString(t.TrainerPic + ",\n")
+    // Trainer Name
+    b.WriteString(padding)
+    b.WriteString(padding)
+    b.WriteString(".trainerName = _(\"")
+    b.WriteString(t.TrainerName+ "\"),\n")
+    // Items
+    b.WriteString(padding)
+    b.WriteString(padding)
+    b.WriteString(".items = {")
+    for i, v := range t.Items {
+        if v != "" && v != "ITEM_NONE" {
+            b.WriteString(v)
+            if i != 3 {
+                b.WriteString(",")
+            }
         }
-        b.WriteString("  }\n")
     }
-    b.WriteString("  DoubleBattle: ")
+    b.WriteString("},\n")
+    // Double Battle
+    b.WriteString(padding)
+    b.WriteString(padding)
+    b.WriteString(".doubleBattle = ")
     if t.DoubleBattle {
-        b.WriteString("true\n")
+        b.WriteString("TRUE,\n")
     } else {
-        b.WriteString("false\n")
+        b.WriteString("FALSE,\n")
     }
+    // AI Flags
+    b.WriteString(padding)
+    b.WriteString(padding)
     if len(t.AiFlags) == 0 {
-        b.WriteString("  AiFlags: {}\n")
+        b.WriteString(".aiFlags = 0,\n")
     } else {
-        b.WriteString("  AiFlags: {\n")
+        b.WriteString(".aiFlags = ")
         for i := range(t.AiFlags) {
-            b.WriteString("    " + t.AiFlags[i] + "\n")
+            b.WriteString(t.AiFlags[i])
+            if i < len(t.AiFlags)-1 {
+                b.WriteString(" | ")
+            }
         }
-        b.WriteString("  }\n")
+        b.WriteString(",\n")
     }
-    b.WriteString("  Party: ")
-    b.WriteString(t.Party+ "\n")
+    b.WriteString(padding)
+    b.WriteString(padding)
+    b.WriteString(".party = ")
+    b.WriteString(t.Party+",\n")
+    b.WriteString(padding)
+    b.WriteString("},\n")
     return b.String()
 }

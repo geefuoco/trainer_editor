@@ -3,6 +3,7 @@ package data_objects
 import (
     "strconv"
     "strings"
+    "reflect"
 )
 
 type TrainerParty struct {
@@ -33,6 +34,85 @@ func TemplateMon() *TrainerMon {
     }
 }
 
+func (mon *TrainerMon) String() string {
+    templateMon := TemplateMon()
+    padding := "    "
+    var buf strings.Builder
+    buf.WriteString(padding)
+    buf.WriteString("{\n")
+    // IVs
+    if !reflect.DeepEqual(templateMon.Iv, mon.Iv) {
+        buf.WriteString(padding)
+        buf.WriteString(".iv = TRAINER_PARTY_IVS(")
+        for i, iv := range mon.Iv {
+            value := strconv.FormatUint(iv, 10)
+            buf.WriteString(value)
+            if i != 5 {
+                buf.WriteString(",")
+            }
+        }
+        buf.WriteString("),\n")
+    }
+    // LEVEL
+    buf.WriteString(padding)
+    buf.WriteString(".lvl = ")
+    level := strconv.FormatUint(mon.Lvl, 10)
+    buf.WriteString(level)
+    buf.WriteString(",\n")
+    // SPECIES
+    buf.WriteString(padding)
+    buf.WriteString(".species = ")
+    buf.WriteString(mon.Species + ",\n")
+    // EVS
+    if !reflect.DeepEqual(templateMon.Ev, mon.Ev) {
+        buf.WriteString(padding)
+        buf.WriteString(".ev = TRAINER_PARTY_EVS(")
+        for i, ev := range mon.Ev {
+            value := strconv.FormatUint(ev, 10)
+            buf.WriteString(value)
+            if i != 5 {
+                buf.WriteString(",")
+            }
+        }
+        buf.WriteString("),\n")
+    }
+    // HELD ITEM
+    if mon.HeldItem != templateMon.HeldItem {
+        print("HeldItem: " + mon.HeldItem + "\n")
+        buf.WriteString(padding)
+        buf.WriteString(".heldItem = ")
+        buf.WriteString(mon.HeldItem + ",\n")
+    }
+    // MOVES
+    if !reflect.DeepEqual(templateMon.Moves, mon.Moves) {
+        for _, m := range mon.Moves {
+            print("Moves: " + m + "\n")
+        }
+        buf.WriteString(padding)
+        buf.WriteString(".moves = {")
+        for i, move := range mon.Moves {
+            buf.WriteString(move)
+            if i != 3 {
+                buf.WriteString(",")
+            }
+        }
+        buf.WriteString("},\n")
+    }
+    if mon.Ability != templateMon.Ability {
+        buf.WriteString(padding)
+        buf.WriteString(".ability = ")
+        buf.WriteString(mon.Ability+",\n")
+    }
+    // SHINY
+    if mon.IsShiny {
+        buf.WriteString(padding)
+        buf.WriteString(".isShiny = TRUE,\n")
+    }
+    buf.WriteString(padding)
+    buf.WriteString("}\n")
+    return buf.String()
+}
+
 func (mon *TrainerMon) CalculateEvTotal() int {
     var total int
     for _, x := range mon.Ev {
@@ -51,58 +131,15 @@ func (mon *TrainerMon) CalculateIvTotal() int {
 
 func (t* TrainerParty) String() string {
     var b strings.Builder
-    b.WriteString("TrainerParty: \n")
-    b.WriteString("  Trainer: " + t.Trainer + "\n")
-    for _, mon := range(t.Party) {
+    b.WriteString("static const struct TrainerMon ")
+    b.WriteString(t.Trainer + "[] = {\n")
+    for i, mon := range(t.Party) {
         b.WriteString(mon.String())
+        if i < len(t.Party)-1 {
+            b.WriteString(",\n")
+        }
     }
+    b.WriteString("};\n")
     return b.String()
 }
 
-func (t *TrainerMon) String() string {
-    var b strings.Builder
-    b.WriteString("TrainerMon: \n")
-    if len(t.Iv) == 0 {
-        b.WriteString("  Iv: {}\n")
-    } else {
-        b.WriteString("  Iv: {\n")
-        for i := range(t.Iv) {
-            value := strconv.FormatUint(t.Iv[i], 10)
-            b.WriteString("    " + value + "\n")
-        }
-        b.WriteString("  }\n")
-    }
-    b.WriteString("  Lvl: ")
-    value := strconv.FormatUint(t.Lvl, 10)
-    b.WriteString(value + "\n")
-    b.WriteString("  Species: " + t.Species + "\n")
-    if len(t.Ev) == 0 {
-        b.WriteString("  Ev: {}\n")
-    } else {
-        b.WriteString("  Ev: {\n")
-        for i := range(t.Ev) {
-            value := strconv.FormatUint(t.Ev[i], 10)
-            b.WriteString("    " + value + "\n")
-        }
-        b.WriteString("  }\n")
-    }
-    b.WriteString("  HeldItem: " + t.HeldItem + "\n")
-    if len(t.Moves) == 0 {
-        b.WriteString("  Moves: {}\n")
-    } else {
-        b.WriteString("  Moves: {\n")
-        for i := range(t.Moves) {
-            value := t.Moves[i]
-            b.WriteString("    " + value + "\n")
-        }
-        b.WriteString("  }\n")
-    }
-    b.WriteString("  Ability: " + t.Ability + "\n")
-    b.WriteString("  IsShiny: ")
-    if t.IsShiny {
-        b.WriteString("true\n")
-    } else {
-        b.WriteString("false\n")
-    }
-    return b.String()
-}

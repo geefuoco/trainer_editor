@@ -4,22 +4,14 @@ import (
     "github.com/geefuoco/trainer_editor/data_objects"
     "github.com/geefuoco/trainer_editor/custom_widgets"
     "time"
-    "fmt"
     "strings"
     "fyne.io/fyne/v2"
     "fyne.io/fyne/v2/widget"
     "fyne.io/fyne/v2/container"
-    "fyne.io/fyne/v2/layout"
     "fyne.io/fyne/v2/canvas"
-
+    "fyne.io/fyne/v2/layout"
 )
 
-var (
-    isProcessing bool
-    processingText string
-    processingTimer *time.Timer
-    throttleInterval = 400 * time.Millisecond
-)
 
 func createTrainerInfo(trainer *data_objects.Trainer) *fyne.Container{ 
     form := container.New(layout.NewFormLayout())
@@ -82,7 +74,7 @@ func createTrainerInfo(trainer *data_objects.Trainer) *fyne.Container{
     trainerPicSelectBox.SetText(trainer.TrainerPic)
     trainerPicSelectBox.OnChanged = func(value string) {
         if len(value) < 3 || isProcessing {
-            trainerClassSelectBox.HideCompletion()
+            trainerPicSelectBox.HideCompletion()
             return
         }
         processingText = value
@@ -119,7 +111,7 @@ func createTrainerInfo(trainer *data_objects.Trainer) *fyne.Container{
     itemSelectBox0.SetText(itemValue)
     itemSelectBox0.OnChanged = func(value string) {
         if len(value) < len("cut") || isProcessing {
-            trainerClassSelectBox.HideCompletion()
+            itemSelectBox0.HideCompletion()
             return
         }
         processingText = value
@@ -148,7 +140,7 @@ func createTrainerInfo(trainer *data_objects.Trainer) *fyne.Container{
     itemSelectBox1.SetText(itemValue)
     itemSelectBox1.OnChanged = func(value string) {
         if len(value) < len("cut") || isProcessing {
-            trainerClassSelectBox.HideCompletion()
+            itemSelectBox1.HideCompletion()
             return
         }
         processingText = value
@@ -178,7 +170,7 @@ func createTrainerInfo(trainer *data_objects.Trainer) *fyne.Container{
     itemSelectBox2.SetText(itemValue)
     itemSelectBox2.OnChanged = func(value string) {
         if len(value) < len("cut") || isProcessing {
-            trainerClassSelectBox.HideCompletion()
+            itemSelectBox2.HideCompletion()
             return
         }
         processingText = value
@@ -206,7 +198,7 @@ func createTrainerInfo(trainer *data_objects.Trainer) *fyne.Container{
     itemSelectBox3.SetText(itemValue)
     itemSelectBox3.OnChanged = func(value string) {
         if len(value) < len("cut") || isProcessing {
-            trainerClassSelectBox.HideCompletion()
+            itemSelectBox3.HideCompletion()
             return
         }
         processingText = value
@@ -260,7 +252,6 @@ func createTrainerInfo(trainer *data_objects.Trainer) *fyne.Container{
     // Double Battle
     doubleBattleLabel := widget.NewLabel("Double Battle")
     doubleBattleCheck := widget.NewCheck("", func(checked bool){
-        fmt.Printf("%t\n", checked)
         trainer.DoubleBattle = checked
     })
     doubleBattleCheck.Checked = trainer.DoubleBattle
@@ -271,70 +262,6 @@ func createTrainerInfo(trainer *data_objects.Trainer) *fyne.Container{
     return content 
 }
 
-func buildTrainerPartiesPath(path string) string {
-    buf := strings.Builder{}
-    buf.WriteString(path)
-    buf.WriteString("/src")
-    buf.WriteString("/data")
-    buf.WriteString("/trainer_parties.h")
-    return buf.String()
-}
-
-func buildTrainerPath(path string) string {
-    buf := strings.Builder{}
-    buf.WriteString(path)
-    buf.WriteString("/src")
-    buf.WriteString("/data")
-    buf.WriteString("/trainers.h")
-    return buf.String()
-}
-
-func buildItemPath(path string) string {
-    buf := strings.Builder{}
-    buf.WriteString(path)
-    buf.WriteString("/include")
-    buf.WriteString("/constants")
-    buf.WriteString("/items.h")
-    return buf.String()
-}
-
-func buildAiFlagsPath(path string) string {
-    buf := strings.Builder{}
-    buf.WriteString(path)
-    buf.WriteString("/include")
-    buf.WriteString("/constants")
-    buf.WriteString("/battle_ai.h")
-    return buf.String()
-}
-
-func buildgTrainerFrontPicPath(path string) string {
-    buf := strings.Builder{}
-    buf.WriteString(path)
-    buf.WriteString("/src")
-    buf.WriteString("/data")
-    buf.WriteString("/graphics")
-    buf.WriteString("/trainers.h")
-    return buf.String()
-}
-
-func buildTrainerSpritePath(path string) string {
-    buf := strings.Builder{}
-    buf.WriteString(path)
-    buf.WriteString("/src")
-    buf.WriteString("/data")
-    buf.WriteString("/trainer_graphics")
-    buf.WriteString("/front_pic_tables.h")
-    return buf.String()
-}
-
-func buildTrainerEncounterMusicPath(path string) string {
-    buf := strings.Builder{}
-    buf.WriteString(path)
-    buf.WriteString("/include")
-    buf.WriteString("/constants")
-    buf.WriteString("/trainers.h")
-    return buf.String()
-}
 
 func filterOptions(options []string, text string) []string {
     filtered := []string{}

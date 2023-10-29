@@ -48,7 +48,7 @@ func (mon *TrainerMon) String() string {
             value := strconv.FormatUint(iv, 10)
             buf.WriteString(value)
             if i != 5 {
-                buf.WriteString(",")
+                buf.WriteString(", ")
             }
         }
         buf.WriteString("),\n")
@@ -71,29 +71,25 @@ func (mon *TrainerMon) String() string {
             value := strconv.FormatUint(ev, 10)
             buf.WriteString(value)
             if i != 5 {
-                buf.WriteString(",")
+                buf.WriteString(", ")
             }
         }
         buf.WriteString("),\n")
     }
     // HELD ITEM
-    if mon.HeldItem != templateMon.HeldItem {
-        print("HeldItem: " + mon.HeldItem + "\n")
+    if mon.HeldItem != "" && mon.HeldItem != templateMon.HeldItem {
         buf.WriteString(padding)
         buf.WriteString(".heldItem = ")
         buf.WriteString(mon.HeldItem + ",\n")
     }
     // MOVES
-    if !reflect.DeepEqual(templateMon.Moves, mon.Moves) {
-        for _, m := range mon.Moves {
-            print("Moves: " + m + "\n")
-        }
+    if !reflect.DeepEqual(templateMon.Moves, mon.Moves) && !reflect.DeepEqual(mon.Moves, [4]string{"","","",""}) {
         buf.WriteString(padding)
         buf.WriteString(".moves = {")
         for i, move := range mon.Moves {
             buf.WriteString(move)
             if i != 3 {
-                buf.WriteString(",")
+                buf.WriteString(", ")
             }
         }
         buf.WriteString("},\n")
@@ -109,7 +105,7 @@ func (mon *TrainerMon) String() string {
         buf.WriteString(".isShiny = TRUE,\n")
     }
     buf.WriteString(padding)
-    buf.WriteString("}\n")
+    buf.WriteString("}")
     return buf.String()
 }
 
@@ -139,7 +135,7 @@ func (t* TrainerParty) String() string {
             b.WriteString(",\n")
         }
     }
-    b.WriteString("};\n")
+    b.WriteString("\n};\n")
     return b.String()
 }
 

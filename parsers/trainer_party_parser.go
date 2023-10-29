@@ -117,7 +117,10 @@ func ParseTrainerParties(filepath string) []*data_objects.TrainerParty{
                     panic("Error: Malformatted Trainer struct")
                 }
                 startOffset := 2 // ={
-                endOffset := 2 // },
+                endOffset := 1 // }
+                if strings.HasSuffix(line, ",") {
+                    endOffset += 1 // , 
+                }
                 for i, item := range strings.Split(line[start+startOffset:len(line)-endOffset], ",") {
                     if !(item ==  "" || item == "\n") {
                         moves[i] = strings.TrimSpace(item)

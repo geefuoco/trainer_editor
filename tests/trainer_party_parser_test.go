@@ -15,8 +15,8 @@ func TestParseTrainerPartyMultipleMons(t *testing.T) {
     parties := parsers.ParseTrainerParties(input)
 
     // Check the result
-    if len(parties) != 1 {
-        t.Errorf("Expected 1 trainerMon, but got %d", len(parties))
+    if len(parties) != 2 {
+        t.Errorf("Expected 2 trainerMon, but got %d", len(parties))
         return
     }
 
@@ -49,16 +49,52 @@ func TestParseTrainerPartyMultipleMons(t *testing.T) {
         Party: testMons,
     }
 
-    if !(parties[0].Trainer == expectedParty.Trainer) {
-        t.Errorf("Trainer was not equal")
+    if !reflect.DeepEqual(expectedParty, parties[0]) {
+        t.Errorf("TrainerParty was not equal")
     }
 
-    for i := range(expectedParty.Party) {
-        expectedPartyMon := expectedParty.Party[i]
-        actualPartyMon := parties[0].Party[i]
-        if !(reflect.DeepEqual(expectedPartyMon, actualPartyMon)) {
-            t.Errorf("Party Mons did not match")
-        }
+    testMons = []*data_objects.TrainerMon {
+        {
+        Iv : [6]uint64{31, 31, 31, 31, 31, 31},
+        Lvl : 32,
+        Species : "SPECIES_GOLEM",
+        HeldItem : "ITEM_NONE",
+        Moves : [4]string{"MOVE_PROTECT", "MOVE_ROLLOUT", "MOVE_MAGNITUDE", "MOVE_EXPLOSION"},
+        },
+        {
+        Iv :[6]uint64{31, 31, 31, 31, 31, 31},
+        Lvl : 35,
+        Species : "SPECIES_KABUTO",
+        HeldItem : "ITEM_SITRUS_BERRY",
+        Moves : [4]string{"MOVE_SWORDS_DANCE", "MOVE_ICE_BEAM", "MOVE_SURF", "MOVE_ROCK_SLIDE"},
+        },
+        {
+        Iv : [6]uint64{31, 31, 31, 31, 31, 31},
+        Lvl : 35,
+        Species : "SPECIES_ONIX",
+        HeldItem : "ITEM_NONE",
+        Moves : [4]string{"MOVE_IRON_TAIL", "MOVE_EXPLOSION", "MOVE_ROAR", "MOVE_ROCK_SLIDE"},
+        },
+        {
+        Iv : [6]uint64{31, 31, 31, 31, 31, 31},
+        Lvl : 37,
+        Species : "SPECIES_NOSEPASS",
+        HeldItem : "ITEM_SITRUS_BERRY",
+        Moves : [4]string{"MOVE_DOUBLE_TEAM", "MOVE_EXPLOSION", "MOVE_PROTECT", "MOVE_ROCK_SLIDE"},
+        },
+    }
+
+    expectedParty = &data_objects.TrainerParty {
+        Trainer: "sParty_Roxanne2",
+        Party: testMons,
+    }
+
+    if !reflect.DeepEqual(parties[1], expectedParty) {
+        t.Log("Expected")
+        t.Log(expectedParty.String())
+        t.Log("Actual")
+        t.Log(parties[1].String())
+        t.Errorf("Trainer Party was not equal\n")
     }
 
 }

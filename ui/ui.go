@@ -149,7 +149,7 @@ func loadAllData(path string) {
 
     pokemonPicMap = parsers.ParsePokemonPics(pokemonSpeciesPath, pokemonSpritePath)
     for k, v := range(pokemonPicMap) {
-        pokemonPicMap[k] = path + "/" +  v
+        pokemonPicMap[k] = filepath.Join(path, v)
         species = append(species, k)
     }
 
@@ -159,7 +159,7 @@ func loadAllData(path string) {
     trainerPicMap = parsers.ParseTrainerPics(trainergFrontPicPath, trainerTrainerSpritePath)
     for k, v := range(trainerPicMap) {
         trainerPics = append(trainerPics, k)
-        trainerPicMap[k] = path + "/" +  v
+        trainerPicMap[k] = filepath.Join(path, v)
     }
     trainers = parsers.ParseTrainers(trainerPath)
     for _, t := range(trainers) {

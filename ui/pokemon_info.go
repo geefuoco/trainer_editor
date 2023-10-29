@@ -10,6 +10,7 @@ import (
     "fyne.io/fyne/v2/canvas"
     "strconv"
     "time"
+    "math/rand"
     "fmt"
 )
 
@@ -22,11 +23,13 @@ const (
     IVS
     EVS
 )
+const maxEvs int = 510
 
 func createPartyInfo(trainerParty *data_objects.TrainerParty) *fyne.Container{
     content := container.NewMax()
-    var movesForm *fyne.Container
+    // var movesForm *fyne.Container
     var infoForm *fyne.Container
+    var ivsAndEvs *fyne.Container
     var grid *fyne.Container
 
     trainerMonList := trainerParty.Party
@@ -58,11 +61,13 @@ func createPartyInfo(trainerParty *data_objects.TrainerParty) *fyne.Container{
         pokemonPic.Refresh()
         pokemonPicWrapper.Objects[0] = pokemonPic
         pokemonPicWrapper.Refresh()
-        movesForm = createMovesForm(mon)
+        // movesForm = createMovesForm(mon)
         infoForm = createPokemonInfoForm(trainerMonList)
+        ivsAndEvs = createPokemonIvsAndEvs(mon)
         // Should always be in the bottom left (3rd) position
-        grid.Objects[2] = movesForm
-        grid.Objects[3] = infoForm
+        // grid.Objects[2] = movesForm
+        grid.Objects[2] = infoForm
+        grid.Objects[3] = ivsAndEvs
     }
 
 
@@ -97,10 +102,10 @@ func createPartyInfo(trainerParty *data_objects.TrainerParty) *fyne.Container{
 
 
     currentMon := trainerMonList[selectedMonIndex]
-    movesForm = createMovesForm(currentMon)
     infoForm = createPokemonInfoForm(trainerMonList)
+    ivsAndEvs = createPokemonIvsAndEvs(currentMon)
     pokemonPicWrapper = container.NewMax(pokemonPic)
-    grid = container.New(layout.NewGridLayout(2), leftPanel, pokemonPicWrapper, movesForm, infoForm)
+    grid = container.New(layout.NewGridLayout(3), leftPanel, pokemonPicWrapper, infoForm, ivsAndEvs)
 
     // Make sure only to select once all other containers have been defined
     monList.Select(0)
@@ -225,7 +230,120 @@ func createPokemonInfoForm(trainerMonList []*data_objects.TrainerMon) *fyne.Cont
     }
     form.Add(abilityLabel)
     form.Add(abilitySelectBox)
-    return form
+    movesForm := createMovesForm(mon)
+    return container.NewVBox(form, movesForm)
+}
+
+func createPokemonIvsAndEvs(mon *data_objects.TrainerMon) *fyne.Container {
+    form := container.New(layout.NewFormLayout())
+    // IVs
+    ivLabel := widget.NewLabel("IVs")
+    currentIvTotal := mon.CalculateIvTotal()
+    ivTotal := widget.NewLabel(strconv.Itoa(currentIvTotal))
+
+    ivForm := container.New(layout.NewFormLayout())
+    ivList := [6]string{"HP", "ATK", "DEF", "SPATK", "SPDEF", "SPD"}
+    ivEntryList := [6]*widget.Entry{}
+    for i, iv := range ivList {
+        ivValueLabel := widget.NewLabel(iv)
+        ivEntry := widget.NewEntry()
+        ivEntry.SetText(strconv.FormatUint(mon.Iv[i], 10))
+        idx := i
+        ivEntry.OnChanged = func(s string) {
+            if s == "" {
+                return
+            }
+            value, err := strconv.ParseUint(s, 10, 64)
+            if err != nil {
+                fmt.Printf("Error: could not parse '%s' to int\n", s)
+                return
+            }
+            if value >= 0 && value <= 31 {
+                mon.Iv[idx] = value
+                currentIvTotal := mon.CalculateIvTotal()
+                ivTotal.Text = strconv.Itoa(currentIvTotal)
+                ivTotal.Refresh()
+            }
+        }
+        ivForm.Add(ivValueLabel)
+        ivForm.Add(ivEntry)
+        ivEntryList[i] = ivEntry
+    }
+
+    // EVs
+    evLabel := widget.NewLabel("EVs")
+    currentEvTotal := mon.CalculateEvTotal()
+    evTotal := widget.NewLabel(strconv.Itoa(currentEvTotal))
+    evForm := container.New(layout.NewFormLayout())
+    evList := [6]string{"HP", "ATK", "DEF", "SPATK", "SPDEF", "SPD"}
+    evEntryList := [6]*widget.Entry{}
+    for i, ev := range evList {
+        evValueLabel := widget.NewLabel(ev)
+        evEntry := widget.NewEntry()
+        evEntry.SetText(strconv.FormatUint(mon.Ev[i], 10))
+        idx := i
+        evEntry.OnChanged = func(s string) {
+            if s == "" {
+                return
+            }
+            value, err := strconv.ParseUint(s, 10, 64)
+            if err != nil {
+                fmt.Printf("Error: could not parse '%s' to int\n", s)
+                return
+            }
+            if value >= 0 && value <= 252 {
+                currentEvTotal := mon.CalculateEvTotal()
+                newTotal := currentEvTotal - int(mon.Ev[idx]) + int(value)
+                if newTotal <= maxEvs {
+                    mon.Ev[idx] = value
+                    evTotal.Text = strconv.Itoa(newTotal)
+                    evTotal.Refresh()
+                } else {
+                    evEntry.SetText("0")
+                }
+            }
+        }
+        evForm.Add(evValueLabel)
+        evForm.Add(evEntry)
+        evEntryList[i] = evEntry 
+    }
+
+    ivRandomizeButton := widget.NewButton("Randomize Ivs", func() {
+        r := rand.New(rand.NewSource(time.Now().UnixNano()))
+        total := 0
+        for i:=0; i < 6; i++ {
+            randValue := r.Intn(31)
+            mon.Iv[i] = uint64(randValue)
+            total += randValue
+            ivEntryList[i].SetText(strconv.Itoa(randValue))
+        }
+        ivTotal.Text = strconv.Itoa(total)
+    })
+
+    evRandomizeButton := widget.NewButton("Randomize Evs", func() {
+        r := rand.New(rand.NewSource(time.Now().UnixNano()))
+        total := 0
+        for i:=0; i < 6; i++ {
+            randValue := r.Intn(252)
+            if randValue + total <= maxEvs {
+                mon.Ev[i] = uint64(randValue)
+                total += randValue
+                evEntryList[i].SetText(strconv.Itoa(randValue))
+            }
+        }
+        evTotal.Text = strconv.Itoa(total)
+    })
+
+    form.Add(ivLabel)
+    form.Add(evLabel)
+    form.Add(ivTotal)
+    form.Add(evTotal)
+    form.Add(ivForm)
+    form.Add(evForm)
+
+    buttonGroup := container.New(layout.NewGridLayout(2), ivRandomizeButton, evRandomizeButton)
+    
+    return container.NewVBox(form, buttonGroup)
 }
 
 func createMovesForm(mon *data_objects.TrainerMon) *fyne.Container {

@@ -33,6 +33,22 @@ func TemplateMon() *TrainerMon {
     }
 }
 
+func (mon *TrainerMon) CalculateEvTotal() int {
+    var total int
+    for _, x := range mon.Ev {
+        total += int(x)
+    }
+    return total
+}
+
+func (mon *TrainerMon) CalculateIvTotal() int {
+    var total int
+    for _, x := range mon.Iv {
+        total += int(x)
+    }
+    return total
+}
+
 func (t* TrainerParty) String() string {
     var b strings.Builder
     b.WriteString("TrainerParty: \n")

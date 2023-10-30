@@ -107,30 +107,85 @@ func TestParseTrainerParty(t *testing.T) {
     parties := ParseTrainerParties(input)
 
     // Check the result
-    if len(parties) != 1 {
-        t.Errorf("Expected 1 trainerMon, but got %d", len(parties))
+    if len(parties) != 6 {
+        t.Errorf("Expected 6 trainerMon, but got %d", len(parties))
         return
     }
 
-    testMon := &data_objects.TrainerMon{
-            Iv: [6]uint64{1, 2, 3, 4, 5, 6},
-            Lvl: 25,
-            Species: "SPECIES_MEWTWO",
-            Ev: [6]uint64{10, 11, 21, 24, 90, 0},
-            HeldItem: "ITEM_NONE",
-            Moves: [4]string{"MOVE_SLASH", "MOVE_PSYCHIC", "MOVE_THUNDER", "MOVE_BLIZZARD"},
-            Ability: "ABILITY_INTIMIDATE",
-            IsShiny: false,
-    }
-
-    expectedParty := &data_objects.TrainerParty{
-        Trainer: "sParty_Sawyer1",
-        Party: []*data_objects.TrainerMon{
-            testMon,
+    expectedParties:= []*data_objects.TrainerParty {
+        {
+            Trainer: "sParty_Sawyer1",
+            Party: []*data_objects.TrainerMon{
+                {
+                    Iv: [6]uint64{1, 2, 3, 4, 5, 6},
+                    Lvl: 25,
+                    Species: "SPECIES_MEWTWO",
+                    Ev: [6]uint64{10, 11, 21, 24, 90, 0},
+                    HeldItem: "ITEM_NONE",
+                    Moves: [4]string{"MOVE_SLASH", "MOVE_PSYCHIC", "MOVE_THUNDER", "MOVE_BLIZZARD"},
+                    Ability: "ABILITY_INTIMIDATE",
+                    IsShiny: false,
+                },
+            },
+        },
+        {
+            Trainer: "sParty_Cindy1",
+            Party: []*data_objects.TrainerMon{
+                {
+                    Lvl: 25,
+                    Species: "SPECIES_MEWTWO",
+                    HeldItem: "ITEM_NONE",
+                },
+            },
+        },
+        {
+            Trainer: "sParty_Mindy1",
+            Party: []*data_objects.TrainerMon{
+                {
+                    Lvl: 25,
+                    Species: "SPECIES_MEWTWO",
+                    Ability: "ABILITY_PRANKSTER",
+                },
+            },
+        },
+        {
+            Trainer: "sParty_Albert",
+            Party: []*data_objects.TrainerMon{
+                {
+                    Lvl: 25,
+                    Species: "SPECIES_MEWTWO",
+                },
+            },
+        },
+        {
+            Trainer: "sParty_Calvin",
+            Party: []*data_objects.TrainerMon{
+                {
+                    Lvl: 25,
+                    Species: "SPECIES_MEWTWO",
+                },
+            },
+        },
+        {
+            Trainer: "sParty_Bob",
+            Party: []*data_objects.TrainerMon{
+                {
+                    Lvl: 25,
+                    Species: "SPECIES_MEWTWO",
+                    IsShiny: false,
+                },
+            },
         },
     }
 
-    if !(reflect.DeepEqual(parties[0], expectedParty)) {
+
+    if !(reflect.DeepEqual(parties, expectedParties)) {
+        for i:=0; i<len(parties); i++ {
+            t.Log("Expected:\n")
+            t.Log(expectedParties[i].String())
+            t.Log("Actual:\n")
+            t.Log(parties[i].String())
+        }
         t.Errorf("Party Mons did not match")
     }
 }

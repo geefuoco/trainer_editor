@@ -34,8 +34,10 @@ func ParseTrainerParties(filepath string) []*data_objects.TrainerParty{
                 if start == -1 {
                     panic("Error: Malformatted TrainerMon struct")
                 }
-                endOffset := 4
-                trainer := line[start:len(line)-endOffset]
+                // This way assumes the format
+                // static const struct TrainerMon sParty_Name[] = {
+                end := strings.IndexByte(line, '[')
+                trainer := line[start:end]
                 currentParty.Trainer = trainer
             } else if len(line) == 1 && line[0] == '{' {
                 // The least amount of fields a trainer can have is LVL and Species
@@ -49,9 +51,9 @@ func ParseTrainerParties(filepath string) []*data_objects.TrainerParty{
                     panic("Error: Malformatted TrainerMon struct")
                 }
                 startOffset := len("=TRAINER_PARTY_IVS(")
-                endOffset := 2 // ),
+                end := strings.IndexByte(line, ')')
                 var ivs [6]uint64
-                for i, iv := range strings.Split(line[start+startOffset:len(line)-endOffset], ",") {
+                for i, iv := range strings.Split(line[start+startOffset:end], ",") {
                     if !(iv ==  "" || iv == "\n") {
                         value, err := strconv.ParseUint(strings.TrimSpace(iv), 10, 64)
                         if err == nil {
@@ -66,8 +68,11 @@ func ParseTrainerParties(filepath string) []*data_objects.TrainerParty{
                     panic("Error: Malformatted TrainerMon struct")
                 }
                 startOffset := 1
-                endOffset := 1
-                lvl := strings.TrimSpace(line[start+startOffset:len(line)-endOffset])
+                end := strings.IndexByte(line, ',')
+                if end == -1 {
+                    end = len(line)
+                }
+                lvl := strings.TrimSpace(line[start+startOffset:end])
                 value, err := strconv.ParseUint(lvl, 10, 64)
                 if err != nil {
                     fmt.Println("Error: Could not read level. Setting default")
@@ -81,8 +86,11 @@ func ParseTrainerParties(filepath string) []*data_objects.TrainerParty{
                     panic("Error: Malformatted TrainerMon struct")
                 }
                 startOffset := 1
-                endOffset := 1
-                species := line[start+startOffset:len(line)-endOffset]
+                end := strings.IndexByte(line, ',')
+                if end == -1 {
+                    end = len(line)
+                }
+                species := line[start+startOffset:end]
                 currentMon.Species = species
             } else if strings.Contains(line, ".ev") {
                 start := strings.IndexByte(line, '=')
@@ -90,9 +98,9 @@ func ParseTrainerParties(filepath string) []*data_objects.TrainerParty{
                     panic("Error: Malformatted TrainerMon struct")
                 }
                 startOffset := len("=TRAINER_PARTY_EVS(")
-                endOffset := 2 // ),
+                end := strings.IndexByte(line, ')')
                 var evs [6]uint64
-                for i, ev := range strings.Split(line[start+startOffset:len(line)-endOffset], ",") {
+                for i, ev := range strings.Split(line[start+startOffset:end], ",") {
                     if !(ev ==  "" || ev == "\n") {
                         value, err := strconv.ParseUint(strings.TrimSpace(ev), 10, 64)
                         if err == nil {
@@ -107,21 +115,20 @@ func ParseTrainerParties(filepath string) []*data_objects.TrainerParty{
                     panic("Error: Malformatted TrainerMon struct")
                 }
                 startOffset := 1
-                endOffset := 1
-                heldItem := line[start+startOffset:len(line)-endOffset]
+                end := strings.IndexByte(line, ',')
+                if end == -1 {
+                    end = len(line)
+                }
+                heldItem := line[start+startOffset:end]
                 currentMon.HeldItem = heldItem
             } else if strings.Contains(line, ".moves") {
                 moves := [4]string{"MOVE_NONE", "MOVE_NONE", "MOVE_NONE", "MOVE_NONE"} 
-                start := strings.IndexByte(line, '=')
-                if start == -1 {
+                start := strings.IndexByte(line, '{') + 1
+                if start == 0 {
                     panic("Error: Malformatted Trainer struct")
                 }
-                startOffset := 2 // ={
-                endOffset := 1 // }
-                if strings.HasSuffix(line, ",") {
-                    endOffset += 1 // , 
-                }
-                for i, item := range strings.Split(line[start+startOffset:len(line)-endOffset], ",") {
+                end := strings.IndexByte(line, '}')
+                for i, item := range strings.Split(line[start:end], ",") {
                     if !(item ==  "" || item == "\n") {
                         moves[i] = strings.TrimSpace(item)
                     }
@@ -133,8 +140,11 @@ func ParseTrainerParties(filepath string) []*data_objects.TrainerParty{
                     panic("Error: Malformatted TrainerMon struct")
                 }
                 startOffset := 1
-                endOffset := 1
-                ability := line[start+startOffset:len(line)-endOffset]
+                end := strings.IndexByte(line, ',')
+                if end == -1 {
+                    end = len(line)
+                }
+                ability := line[start+startOffset:end]
                 currentMon.Ability = ability
             } else if strings.Contains(line, ".isShiny") {
                 if strings.Contains(line, "TRUE") {

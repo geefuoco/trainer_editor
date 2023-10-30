@@ -10,3 +10,41 @@ static const struct TrainerMon sParty_Sawyer1[] = {
     .isShiny = FALSE,
     },
 };
+
+static const struct TrainerMon sParty_Cindy1[] = {
+    {
+    .lvl = 25,
+    .species = SPECIES_MEWTWO,
+    .heldItem = ITEM_NONE
+    },
+};
+
+static const struct TrainerMon sParty_Mindy1[] = {
+    {
+    .lvl = 25,
+    .species = SPECIES_MEWTWO,
+    .ability= ABILITY_PRANKSTER
+    },
+};
+
+static const struct TrainerMon sParty_Albert[] = {
+    {
+    .lvl = 25,
+    .species = SPECIES_MEWTWO
+    },
+};
+
+static const struct TrainerMon sParty_Calvin[] = {
+    {
+    .species = SPECIES_MEWTWO,
+    .lvl = 25
+    },
+};
+
+static const struct TrainerMon sParty_Bob[] = {
+    {
+    .lvl = 25,
+    .species = SPECIES_MEWTWO,
+    .isShiny = FALSE
+    },
+};

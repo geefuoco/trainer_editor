@@ -4,6 +4,7 @@ import (
     "strings"
     "reflect"
     "os"
+    "bufio"
 )
 
 type Trainer struct{
@@ -23,31 +24,30 @@ func SaveTrainers(filepath string, trainers []*Trainer) error {
     if err != nil {
         return err
     }
-    _, err = file.WriteString("const struct Trainer gTrainers[] = {\n")
+    defer file.Close()
+    writer := bufio.NewWriter(file)
+    _, err = writer.WriteString("const struct Trainer gTrainers[] = {\n")
     if err != nil {
         return err;
     }
-    file.Sync()
 
     for i, trainer := range trainers {
-        _, err = file.WriteString(trainer.String())
+        _, err = writer.WriteString(trainer.String())
         if err != nil {
             return err
         }
-        file.Sync()
         if i != len(trainers)-1{
-            _, err = file.WriteString("\n")
+            _, err = writer.WriteString("\n")
             if err != nil {
                 return err
             }
-            file.Sync()
         }
     }
-    _, err = file.WriteString("};")
+    _, err = writer.WriteString("};")
     if err != nil {
         return err
     }
-    file.Sync()
+    writer.Flush()
     return nil
 }
 
@@ -101,7 +101,18 @@ func (t *Trainer) String() string {
     b.WriteString(padding)
     b.WriteString(padding)
     b.WriteString(".trainerName = _(\"")
-    b.WriteString(t.TrainerName+ "\"),\n")
+    if strings.Contains(t.TrainerName, "&") {
+        split := strings.Split(t.TrainerName, "&")
+        for i, sp := range split {
+            b.WriteString(sp)
+            if i != len(split)-1{
+                b.WriteString(" & ")
+            }
+        }
+        b.WriteString("\"),\n")
+    } else {
+        b.WriteString(t.TrainerName+ "\"),\n")
+    }
     // Items
     b.WriteString(padding)
     b.WriteString(padding)

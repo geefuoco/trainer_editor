@@ -22,6 +22,7 @@ var isProcessing            bool
 var processingText          string
 var processingTimer         *time.Timer
 var throttleInterval = 400*time.Millisecond
+var isSaving                bool
 //  Globals for storing data from parsers
 var projectPath             string
 var trainers                []*data_objects.Trainer
@@ -105,6 +106,7 @@ func RunApp() {
                 list.Select(0)
             }
             if trainers == nil || len(trainers) == 0 {
+                createModal(myWindow, "Error", "Not in pokeemerald directory").Show()
                 fmt.Println("Error: Could not populate the trainer list")
             }
         },
@@ -119,6 +121,9 @@ func RunApp() {
             // TODO
             // Might need a better way to validate that trainers are being
             // saved correctly
+            if isSaving {
+                return
+            }
             if trainers != nil && len(trainers) > 0 {
                 if projectPath == "" {
                     fmt.Println("Error: Did not find path to pokeemerald.")
@@ -126,13 +131,15 @@ func RunApp() {
                     return
                 }
                 trainerPath := buildTrainerPath(projectPath)
+                isSaving = true
                 err := data_objects.SaveTrainers(trainerPath, trainers)
                 if err != nil {
                     fmt.Println("Error: " + err.Error())
                     // Error Popup
                     createModal(myWindow, "Error", err.Error()).Show()
                 } else {
-                    createModel(myWindow, "Saved", "Save successful").Show()
+                    isSaving = false
+                    createModal(myWindow, "Saved", "Save successful").Show()
                 }
             }
         }),
@@ -158,7 +165,7 @@ func RunApp() {
 	myWindow.ShowAndRun()
 }
 
-func createModal(myWindow fyne.Window, tilte string, msg string) *widget.PopUp {
+func createModal(myWindow fyne.Window, title string, msg string) *widget.PopUp {
     var popup *widget.PopUp
     label := widget.NewLabel(title)
     message := widget.NewLabel(msg)

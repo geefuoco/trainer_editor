@@ -2,6 +2,8 @@ package data_objects
 
 import (
     "strings"
+    "reflect"
+    "os"
 )
 
 type Trainer struct{
@@ -16,7 +18,43 @@ type Trainer struct{
     Party string
 }
 
+func SaveTrainers(filepath string, trainers []*Trainer) error {
+    file, err := os.OpenFile(filepath, os.O_WRONLY, 0666)
+    if err != nil {
+        return err
+    }
+    _, err = file.WriteString("const struct Trainer gTrainers[] = {\n")
+    if err != nil {
+        return err;
+    }
+    file.Sync()
+
+    for i, trainer := range trainers {
+        _, err = file.WriteString(trainer.String())
+        if err != nil {
+            return err
+        }
+        file.Sync()
+        if i != len(trainers)-1{
+            _, err = file.WriteString("\n")
+            if err != nil {
+                return err
+            }
+            file.Sync()
+        }
+    }
+    _, err = file.WriteString("};")
+    if err != nil {
+        return err
+    }
+    file.Sync()
+    return nil
+}
+
 func (t* Trainer) GetPartyName() string {
+    if t.Party == "NULL" {
+        return t.Party
+    }
     if len(t.Party) > 0 {
         return t.Party[len("TRAINER_PARTY("):len(t.Party)-1]
     }
@@ -25,6 +63,8 @@ func (t* Trainer) GetPartyName() string {
 
 func (t *Trainer) String() string {
     var b strings.Builder
+
+    templateItems := [4]string{"ITEM_NONE","ITEM_NONE","ITEM_NONE","ITEM_NONE"}
     padding := "    "
     // Trainer Key
     b.WriteString(padding)
@@ -40,7 +80,18 @@ func (t *Trainer) String() string {
     b.WriteString(padding)
     b.WriteString(padding)
     b.WriteString(".encounterMusic_gender = ")
-    b.WriteString(t.EncounterMusicGender+ ",\n")
+    if strings.Contains(t.EncounterMusicGender, "|") {
+        split := strings.Split(t.EncounterMusicGender, "|")
+        for i, sp := range split {
+            b.WriteString(sp)
+            if i != len(split)-1{ 
+                b.WriteString(" | ")
+            }
+        }
+        b.WriteString(",\n")
+    } else {
+        b.WriteString(t.EncounterMusicGender+ ",\n")
+    }
     // Trainer Pic
     b.WriteString(padding)
     b.WriteString(padding)
@@ -55,11 +106,13 @@ func (t *Trainer) String() string {
     b.WriteString(padding)
     b.WriteString(padding)
     b.WriteString(".items = {")
-    for i, v := range t.Items {
-        if v != "" && v != "ITEM_NONE" {
-            b.WriteString(v)
-            if i != 3 {
-                b.WriteString(",")
+    if !reflect.DeepEqual(t.Items, templateItems) {
+        for i, v := range t.Items {
+            if v != "" {
+                b.WriteString(v)
+                if i != 3 {
+                    b.WriteString(", ")
+                }
             }
         }
     }
@@ -90,6 +143,12 @@ func (t *Trainer) String() string {
     }
     b.WriteString(padding)
     b.WriteString(padding)
+    // Special case for NONE trainer
+    if t.TrainerKey == "TRAINER_NONE" {
+        b.WriteString(".partySize = 0,\n")
+        b.WriteString(padding)
+        b.WriteString(padding)
+    } 
     b.WriteString(".party = ")
     b.WriteString(t.Party+",\n")
     b.WriteString(padding)

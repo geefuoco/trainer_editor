@@ -112,7 +112,7 @@ func ParseTrainers(filepath string) []*data_objects.Trainer {
             endOffset := 1
             var party string
             if strings.Contains(line, "NULL") {
-                party = ""
+                party = "NULL"
             } else {
                 if strings.HasSuffix(line, ",") {
                     party = line[start+startOffset:len(line)-endOffset]

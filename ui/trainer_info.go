@@ -236,12 +236,7 @@ func createTrainerInfo(trainer *data_objects.Trainer) *fyne.Container{
             end = len(aiFlags)
         }
         check := widget.NewCheckGroup(aiFlags[j:end], func(opts []string) {
-            for _, opt := range(opts) {
-                if !SliceContains(trainer.AiFlags, opt) {
-                    trainer.AiFlags = append(trainer.AiFlags, opt)
-                }
-
-            }
+            trainer.AiFlags = opts
         })
         if trainer.AiFlags != nil {
             check.SetSelected(trainer.AiFlags)

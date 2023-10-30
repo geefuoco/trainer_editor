@@ -23,6 +23,7 @@ var processingText          string
 var processingTimer         *time.Timer
 var throttleInterval = 400*time.Millisecond
 //  Globals for storing data from parsers
+var projectPath             string
 var trainers                []*data_objects.Trainer
 var trainerParties          []*data_objects.TrainerParty
 var list                    *widget.List
@@ -93,6 +94,7 @@ func RunApp() {
                 return
             }
             path := uri.Path()
+            projectPath = path
             loadAllData(path)
             if trainers != nil {
                 list = createList(trainers)
@@ -110,8 +112,29 @@ func RunApp() {
     )
 
     toolbar := widget.NewToolbar(
-        widget.NewToolbarAction(theme.FileIcon(), func() {
+        widget.NewToolbarAction(theme.FolderOpenIcon(), func() {
             folderDialog.Show()
+        }),
+        widget.NewToolbarAction(theme.DocumentSaveIcon(), func() {
+            // TODO
+            // Might need a better way to validate that trainers are being
+            // saved correctly
+            if trainers != nil && len(trainers) > 0 {
+                if projectPath == "" {
+                    fmt.Println("Error: Did not find path to pokeemerald.")
+                    createModal(myWindow, "Error", "Did not find path to pokeemerald directory").Show()
+                    return
+                }
+                trainerPath := buildTrainerPath(projectPath)
+                err := data_objects.SaveTrainers(trainerPath, trainers)
+                if err != nil {
+                    fmt.Println("Error: " + err.Error())
+                    // Error Popup
+                    createModal(myWindow, "Error", err.Error()).Show()
+                } else {
+                    createModel(myWindow, "Saved", "Save successful").Show()
+                }
+            }
         }),
     )
 
@@ -133,6 +156,18 @@ func RunApp() {
 
     myWindow.SetContent(content)
 	myWindow.ShowAndRun()
+}
+
+func createModal(myWindow fyne.Window, tilte string, msg string) *widget.PopUp {
+    var popup *widget.PopUp
+    label := widget.NewLabel(title)
+    message := widget.NewLabel(msg)
+    closeButton := widget.NewButton("Close", func() {
+        popup.Hide()
+    })
+    content := container.NewVBox(label, message, closeButton)
+    popup = widget.NewModalPopUp(content, myWindow.Canvas())
+    return popup
 }
 
 func loadAllData(path string) {
@@ -176,6 +211,9 @@ func loadAllData(path string) {
 }
 
 func getTrainerParty(partyName string) *data_objects.TrainerParty {
+    if partyName == "NULL"{
+        return nil
+    }
     for _, party := range(trainerParties) {
         if party.Trainer == partyName {
             return party
@@ -199,6 +237,7 @@ func createList(listOfTrainers []*data_objects.Trainer) *widget.List {
 
     list.OnSelected = func(id widget.ListItemID) {
         selectedTrainer := listOfTrainers[id]
+
         selectedParty := getTrainerParty(selectedTrainer.GetPartyName())
         selectedMonIndex = 0
         if selectedParty != nil {

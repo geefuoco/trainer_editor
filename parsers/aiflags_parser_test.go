@@ -1,14 +1,14 @@
-package parser_tests
+package parsers
 
 import (
     "reflect"
     "testing"
-    "github.com/geefuoco/trainer_editor/parsers"
 )
 
 func TestAiFlagParser(t *testing.T) {
+    t.Parallel()
 
-    input := "test_cases/aiflags_testcase.txt"
+    input := "testdata/aiflags_testcase.txt"
 
     expectedAiFlags := []string {
         "AI_FLAG_BASIC_GOOD_TRAINER",
@@ -33,7 +33,7 @@ func TestAiFlagParser(t *testing.T) {
         "AI_FLAG_OMNISCIENT",
     }
 
-    aiFlags := parsers.ParseAiFlags(input)
+    aiFlags := ParseAiFlags(input)
 
     if !(reflect.DeepEqual(expectedAiFlags, aiFlags)) {
         t.Errorf("AI Flags were not equal")

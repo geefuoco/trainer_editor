@@ -1,14 +1,14 @@
-package parser_tests
+package parsers
 
 import (
     "reflect"
     "testing"
-    "github.com/geefuoco/trainer_editor/parsers"
 )
 
 func TestParseEncounterMusic(t *testing.T) {
+    t.Parallel()
 
-    input := "test_cases/trainer_encounter_music_testcase.txt"
+    input := "testdata/trainer_encounter_music_testcase.txt"
 
     expectedEncounterMusics := []string{
         "TRAINER_ENCOUNTER_MUSIC_MALE",
@@ -27,7 +27,7 @@ func TestParseEncounterMusic(t *testing.T) {
         "TRAINER_ENCOUNTER_MUSIC_RICH",
     }
 
-    music := parsers.ParseTrainerEncounterMusic(input)
+    music := ParseTrainerEncounterMusic(input)
 
     if !reflect.DeepEqual(music, expectedEncounterMusics) {
         t.Errorf("Enounter music was not equal")

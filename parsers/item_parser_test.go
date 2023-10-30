@@ -1,13 +1,13 @@
-package parser_tests
+package parsers
 
 import (
     "testing"
     "reflect"
-    "github.com/geefuoco/trainer_editor/parsers"
 )
 
 func TestItemParser(t *testing.T) {
-    input := "test_cases/items_testcase.txt"
+    t.Parallel()
+    input := "testdata/items_testcase.txt"
 
 
     expectedItems := []string{
@@ -29,7 +29,7 @@ func TestItemParser(t *testing.T) {
         "ITEM_LEVEL_BALL",
     }
 
-    items := parsers.ParseItems(input)
+    items := ParseItems(input)
 
     t.Logf("Actual Items:\n")
     for _, item := range(items) {

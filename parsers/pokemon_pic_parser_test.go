@@ -1,15 +1,15 @@
-package parsers_test
+package parsers
 
 import (
     "reflect"
     "testing"
-    "github.com/geefuoco/trainer_editor/parsers"
 )
 
 func TestPokemonPicsParser(t *testing.T) {
+    t.Parallel()
 
-    input1 := "test_cases/pokemon_species_testcase.txt"
-    input2 := "test_cases/pokemon_pic_parser_testcase.txt"
+    input1 := "testdata/pokemon_species_testcase.txt"
+    input2 := "testdata/pokemon_pic_parser_testcase.txt"
 
 
     expectedOutput := map[string]string {
@@ -23,7 +23,7 @@ func TestPokemonPicsParser(t *testing.T) {
         "SPECIES_ROSELIA":"graphics/pokemon/roselia/anim_front.png",
     }
 
-    actual := parsers.ParsePokemonPics(input1, input2)
+    actual := ParsePokemonPics(input1, input2)
 
     if !reflect.DeepEqual(actual, expectedOutput) {
         t.Logf("Actual\n")

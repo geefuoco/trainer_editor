@@ -1,14 +1,14 @@
-package parsers_test
+package parsers
 
 import (
     "reflect"
     "testing"
-    "github.com/geefuoco/trainer_editor/parsers"
 )
 
 func TestPokemonMovesParser(t *testing.T) {
+    t.Parallel()
 
-    input := "test_cases/pokemon_moves_testcase.txt"
+    input := "testdata/pokemon_moves_testcase.txt"
 
     expectedOutput := []string {
         "MOVE_NONE",
@@ -37,7 +37,7 @@ func TestPokemonMovesParser(t *testing.T) {
         "MOVE_IVY_CUDGEL",
     }
 
-    actual := parsers.ParseMoves(input)
+    actual := ParseMoves(input)
 
     if !reflect.DeepEqual(actual, expectedOutput) {
         t.Logf("Expected\n")

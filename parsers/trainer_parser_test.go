@@ -1,18 +1,18 @@
-package parsers_test
+package parsers
 
 import (
     "testing"
     "reflect"
-    "github.com/geefuoco/trainer_editor/parsers"
     "github.com/geefuoco/trainer_editor/data_objects"
 )
 
 func TestParseTrainers(t *testing.T) {
+    t.Parallel()
     // Create a test input string that simulates the contents of a file
-    input := "test_cases/trainer_testcase.txt"    
+    input := "testdata/trainer_testcase.txt"    
 
     // Call the function with the test input
-    trainers := parsers.ParseTrainers(input)
+    trainers := ParseTrainers(input)
 
     // Check the result
     if len(trainers) != 1 {
@@ -44,10 +44,10 @@ func TestParseTrainers(t *testing.T) {
 
 func TestParseNoneTrainer(t *testing.T) {
     // Create a test input string that simulates the contents of a file
-    input := "test_cases/notrainer_testcase.txt"    
+    input := "testdata/notrainer_testcase.txt"    
 
     // Call the function with the test input
-    trainers := parsers.ParseTrainers(input)
+    trainers := ParseTrainers(input)
 
     // Check the result
     if len(trainers) != 1 {
@@ -64,7 +64,7 @@ func TestParseNoneTrainer(t *testing.T) {
         Items:                [4]string{"ITEM_NONE","ITEM_NONE","ITEM_NONE","ITEM_NONE"},
         DoubleBattle:         false,
         AiFlags:              []string{},
-        Party:                "",
+        Party:                "NULL",
     }
 
     if !(reflect.DeepEqual(trainers[0], expectedTrainer)) {

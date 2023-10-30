@@ -1,18 +1,18 @@
-package parsers_test
+package parsers
 
 import (
     "testing"
     "reflect"
-    "github.com/geefuoco/trainer_editor/parsers"
     "github.com/geefuoco/trainer_editor/data_objects"
 )
 
 func TestParseTrainerPartyMultipleMons(t *testing.T) {
+    t.Parallel()
     // Create a test input string that simulates the contents of a file
-    input := "test_cases/trainer_party_multiple_testcase.txt"    
+    input := "testdata/trainer_party_multiple_testcase.txt"    
 
     // Call the function with the test input
-    parties := parsers.ParseTrainerParties(input)
+    parties := ParseTrainerParties(input)
 
     // Check the result
     if len(parties) != 2 {
@@ -101,10 +101,10 @@ func TestParseTrainerPartyMultipleMons(t *testing.T) {
 
 func TestParseTrainerParty(t *testing.T) {
     // Create a test input string that simulates the contents of a file
-    input := "test_cases/trainer_party_testcase.txt"    
+    input := "testdata/trainer_party_testcase.txt"    
 
     // Call the function with the test input
-    parties := parsers.ParseTrainerParties(input)
+    parties := ParseTrainerParties(input)
 
     // Check the result
     if len(parties) != 1 {

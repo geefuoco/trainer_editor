@@ -1,14 +1,14 @@
-package data_objects_tests
+package parsers
 
 import (
     "testing"
-    "github.com/geefuoco/trainer_editor/parsers"
     "os"
 )
 
 func TestSerializeTrainer(t *testing.T) {
+    t.Parallel()
 
-    input := "test_cases/trainer_testcase.txt"
+    input := "testdata/trainer_testcase.txt"
 
     file, err := os.ReadFile(input)
     if err != nil {
@@ -18,7 +18,7 @@ func TestSerializeTrainer(t *testing.T) {
 
     expected := string(file)
 
-    actual := parsers.ParseTrainers(input)[0]
+    actual := ParseTrainers(input)[0]
 
     if actual.String() != expected {
         t.Log("Expected\n")

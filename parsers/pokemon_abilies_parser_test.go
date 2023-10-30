@@ -1,13 +1,13 @@
-package parser_tests
+package parsers
 
 import (
     "reflect"
     "testing"
-    "github.com/geefuoco/trainer_editor/parsers"
 )
 
 func TestPokemonAbilitiesParser(t *testing.T) {
-    input := "test_cases/abilities_testcase.txt"
+    t.Parallel()
+    input := "testdata/abilities_testcase.txt"
 
     expectedOutput := []string {
         "ABILITY_NONE",
@@ -25,7 +25,7 @@ func TestPokemonAbilitiesParser(t *testing.T) {
         "ABILITY_OBLIVIOUS",
     }
 
-    actual := parsers.ParsePokemonAbilities(input) 
+    actual := ParsePokemonAbilities(input) 
 
     if !reflect.DeepEqual(actual, expectedOutput) {
         t.Log("Expected\n")

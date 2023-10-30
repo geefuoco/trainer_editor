@@ -1,23 +1,23 @@
-package data_objects_tests
+package parsers
 
 import (
     "testing"
-    "github.com/geefuoco/trainer_editor/parsers"
     "github.com/geefuoco/trainer_editor/data_objects"
     "os"
 )
 
 func TestSaveTrainers(t *testing.T) {
+    t.Parallel()
 
-    input := "test_cases/trainer_save_testcase.txt"
+    input := "testdata/trainer_save_testcase.txt"
 
-    actual := parsers.ParseTrainers(input)
+    actual := ParseTrainers(input)
 
     if len(actual) != 4 {
         t.Fatalf("Expected 4 trainers, found %d", len(actual))
     }
 
-    err := data_objects.SaveTrainers("test_cases/test_save_file.c", actual)
+    err := data_objects.SaveTrainers("testdata/test_save_file.c", actual)
     if err != nil {
         panic(err)
     }
@@ -29,7 +29,7 @@ func TestSaveTrainers(t *testing.T) {
         panic(err)
     }
 
-    f2, err := os.ReadFile("test_cases/test_save_file.c")
+    f2, err := os.ReadFile("testdata/test_save_file.c")
     if err != nil {
         panic(err)
     }

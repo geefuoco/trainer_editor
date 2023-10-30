@@ -1,17 +1,17 @@
-package parser_tests
+package parsers
 
 import (
     "testing"
     "reflect"
-    "github.com/geefuoco/trainer_editor/parsers"
 )
 
 func TestParseTrainerPics(t *testing.T) {
+    t.Parallel()
 
-    input1 := "test_cases/trainer_pic_testcase.txt"
-    input2 := "test_cases/trainer_frontpic_testcase.txt"
+    input1 := "testdata/trainer_pic_testcase.txt"
+    input2 := "testdata/trainer_frontpic_testcase.txt"
 
-    pics := parsers.ParseTrainerPics(input1, input2)
+    pics := ParseTrainerPics(input1, input2)
 
     expectedTrainerPics := map[string]string{
         "TRAINER_PIC_HIKER": "graphics/trainers/front_pics/hiker.png",

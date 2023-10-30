@@ -1,15 +1,15 @@
-package data_objects_tests
+package parsers
 
 import (
     "testing"
-    "github.com/geefuoco/trainer_editor/parsers"
 )
 
 func TestTrainerMonString(t *testing.T) {
+    t.Parallel()
 
-    input := "test_cases/trainer_party_multiple_testcase.txt"
+    input := "testdata/trainer_party_multiple_testcase.txt"
 
-    actual := parsers.ParseTrainerParties(input)[0]
+    actual := ParseTrainerParties(input)[0]
 
     expected := `static const struct TrainerMon sParty_Roxanne1[] = {
     {

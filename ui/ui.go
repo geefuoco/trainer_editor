@@ -12,6 +12,7 @@ import (
     "github.com/geefuoco/trainer_editor/data_objects"
     "github.com/geefuoco/trainer_editor/parsers"
     "github.com/geefuoco/trainer_editor/logging"
+    "github.com/geefuoco/trainer_editor/custom_widgets"
     "strings"
     "path/filepath"
     "time"
@@ -146,6 +147,8 @@ func RunApp() {
                 }
             }
         }),
+        widget.NewToolbarSpacer(),
+        custom_widgets.NewToolbarLabel("Toggle Logging"),
         widget.NewToolbarAction(theme.DocumentCreateIcon(), func() {
             logging.EnableLogging()
         }),
@@ -256,8 +259,6 @@ func createList(listOfTrainers []*data_objects.Trainer) *widget.List {
         selectedParty := getTrainerParty(selectedTrainer.GetPartyName())
         selectedMonIndex = 0
         if selectedParty != nil {
-            print(selectedTrainer.String()+"\n")
-            print(selectedParty.String()+"\n")
             trainerInfo.Objects = []fyne.CanvasObject{}
             updatedTrainerInfo := createTrainerInfo(selectedTrainer)
             trainerInfo.Add(updatedTrainerInfo)

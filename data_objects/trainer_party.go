@@ -93,6 +93,9 @@ func (mon *TrainerMon) String() string {
         buf.WriteString(padding)
         buf.WriteString(".moves = {")
         for i, move := range mon.Moves {
+            if move == "" {
+                move = "MOVE_NONE"
+            }
             buf.WriteString(move)
             if i != 3 {
                 buf.WriteString(", ")

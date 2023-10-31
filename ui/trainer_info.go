@@ -49,7 +49,7 @@ func createTrainerInfo(trainer *data_objects.Trainer) *fyne.Container{
     trainerNameEntry:= widget.NewEntry()
     trainerNameEntry.SetText(trainer.TrainerName)
     trainerNameEntry.OnChanged = func(s string) {
-        if len(s) >= 3 {
+        if len(s) >= 3 && len(s) <= 10 {
             trainer.TrainerName = s
         }
     }

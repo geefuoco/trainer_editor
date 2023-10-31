@@ -134,7 +134,7 @@ func (t *Trainer) String() string {
     b.WriteString(padding)
     b.WriteString(padding)
     b.WriteString(".trainerName = _(\"")
-    if strings.Contains(t.TrainerName, "&") {
+    if strings.Contains(t.TrainerName, "&") && len(t.TrainerName)+2 <= 10 {
         split := strings.Split(t.TrainerName, "&")
         for i, sp := range split {
             b.WriteString(sp)

@@ -4,6 +4,7 @@ import (
     "strconv"
     "strings"
     "reflect"
+    "github.com/geefuoco/trainer_editor/logging"
 )
 
 type TrainerParty struct {
@@ -62,7 +63,12 @@ func (mon *TrainerMon) String() string {
     // SPECIES
     buf.WriteString(padding)
     buf.WriteString(".species = ")
-    buf.WriteString(mon.Species + ",\n")
+    if mon.Species == "SPECIES_NONE" {
+        logging.WarnLog("Tried to set mon with SPECIES_NONE. Setting to default")
+        buf.WriteString("SPECIES_UNOWN" + ",\n")
+    } else {
+        buf.WriteString(mon.Species + ",\n")
+    }
     // EVS
     if !reflect.DeepEqual(templateMon.Ev, mon.Ev) {
         buf.WriteString(padding)

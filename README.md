@@ -6,6 +6,16 @@ Checked on pokeemerald-expansion master branch with commit bd71946372775f4474339
 
 ---
 
+## Download
+
+Download the latest release [here](https://github.com/geefuoco/trainer_editor/tree/v1.0.0/releases/latest)
+
+## Build from source
+
+`git clone --depth=1 https://github.com/geefuoco/trainer_editor.git`
+
+`cd trainer_editor && go mod tidy && go build`
+
 # Features
 
 Searchable list of trainers to edit their

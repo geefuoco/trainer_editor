@@ -1,18 +1,18 @@
 package parsers
 
 import (
-    "fmt"
     "os"
     "bufio"
     "strings"
     "github.com/geefuoco/trainer_editor/data_objects"
+    "github.com/geefuoco/trainer_editor/logging"
 )
 
 func ParseTrainers(filepath string) []*data_objects.Trainer {
     file, err := os.Open(filepath)
     defer file.Close()
     if err != nil {
-        fmt.Println("Error when opening file: ", err)
+        logging.ErrorLog("when opening file: "+filepath)
         return nil
     }
 
@@ -34,6 +34,7 @@ func ParseTrainers(filepath string) []*data_objects.Trainer {
         }else if strings.Contains(line, ".trainerClass") {
             start := strings.IndexByte(line, '=')
             if start == -1 {
+                logging.ErrorLog("could not parse line: "+line)
                 panic("Error: Malformatted Trainer struct")
             }
             startOffset := 1
@@ -42,6 +43,7 @@ func ParseTrainers(filepath string) []*data_objects.Trainer {
         } else if strings.Contains(line, ".encounterMusic_gender") {
             start := strings.IndexByte(line, '=')
             if start == -1 {
+                logging.ErrorLog("could not parse line: "+line)
                 panic("Error: Malformatted Trainer struct")
             }
             startOffset := 1
@@ -50,6 +52,7 @@ func ParseTrainers(filepath string) []*data_objects.Trainer {
         } else if strings.Contains(line, ".trainerPic") {
             start := strings.IndexByte(line, '=')
             if start == -1 {
+                logging.ErrorLog("could not parse line: "+line)
                 panic("Error: Malformatted Trainer struct")
             }
             startOffset:=1
@@ -58,6 +61,7 @@ func ParseTrainers(filepath string) []*data_objects.Trainer {
         } else if strings.Contains(line, ".trainerName") {
             start := strings.IndexByte(line, '=')
             if start == -1 {
+                logging.ErrorLog("could not parse line: "+line)
                 panic("Error: Malformatted Trainer struct")
             }
             startOffset := 4 // =_("
@@ -68,6 +72,7 @@ func ParseTrainers(filepath string) []*data_objects.Trainer {
             items := [4]string{"ITEM_NONE", "ITEM_NONE", "ITEM_NONE", "ITEM_NONE"}
             start := strings.IndexByte(line, '=')
             if start == -1 {
+                logging.ErrorLog("could not parse line: "+line)
                 panic("Error: Malformatted Trainer struct")
             }
             startOffset := 2 // ={
@@ -81,6 +86,7 @@ func ParseTrainers(filepath string) []*data_objects.Trainer {
         } else if strings.Contains(line, ".doubleBattle") {
             start := strings.IndexByte(line, '=')
             if start == -1 {
+                logging.ErrorLog("could not parse line: "+line)
                 panic("Error: Malformatted Trainer struct")
             }
             var doubleBattle bool
@@ -93,6 +99,7 @@ func ParseTrainers(filepath string) []*data_objects.Trainer {
         } else if strings.Contains(line, ".aiFlags") {
             start := strings.IndexByte(line, '=')
             if start == -1 {
+                logging.ErrorLog("could not parse line: "+line)
                 panic("Error: Malformatted Trainer struct")
             }
             startOffset := 1
@@ -106,6 +113,7 @@ func ParseTrainers(filepath string) []*data_objects.Trainer {
         } else if strings.Contains(line, ".party") && !strings.Contains(line, ".partySize"){
             start := strings.IndexByte(line, '=')
             if start == -1 {
+                logging.ErrorLog("could not parse line: "+line)
                 panic("Error: Malformatted Trainer struct")
             }
             startOffset := 1
@@ -126,7 +134,7 @@ func ParseTrainers(filepath string) []*data_objects.Trainer {
     trainers = append(trainers, currentTrainer)
 
     if err := scanner.Err(); err != nil {
-        fmt.Println("Error reading file: ", err)
+        logging.ErrorLog("error reading file: "+ err.Error())
         return nil
     }
     return trainers

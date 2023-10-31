@@ -2,8 +2,8 @@ package parsers
 
 import (
     "strings"
-    "fmt"
     "os"
+    "github.com/geefuoco/trainer_editor/logging"
 )
 
 func ParsePokemonPics(speciesNamesFilePath, speciesSpritesFilePath string) map[string]string {
@@ -24,7 +24,7 @@ func ParsePokemonPics(speciesNamesFilePath, speciesSpritesFilePath string) map[s
 func parseSpeciesNames(filepath string) map[string]string {
     file, err := os.ReadFile(filepath)
     if err != nil {
-        fmt.Println("Error: could not read file: " + filepath)
+        logging.ErrorLog("could not read file: " + filepath)
         return nil
     }
 
@@ -40,7 +40,7 @@ func parseSpeciesNames(filepath string) map[string]string {
             start := strings.Index(line, "SPECIES_SPRITE(") + len("SPECIES_SPRITE(")
             split := strings.Split(line, ",")
             if start == -1 {
-                fmt.Println("Error: Could not parse line: " + line)
+                logging.WarnLog("Error: Could not parse line: " + line)
                 continue
             }
             key := strings.TrimSpace("SPECIES_"+split[0][start:])
@@ -60,7 +60,7 @@ func parseSpeciesNames(filepath string) map[string]string {
 func parsePokemonSprites(filepath string) map[string]string {
     file, err := os.ReadFile(filepath)
     if err != nil {
-        fmt.Println("Error: could not read file: " + filepath)
+        logging.ErrorLog("could not read file: " + filepath)
         return nil
     }
 
@@ -74,7 +74,7 @@ func parsePokemonSprites(filepath string) map[string]string {
             start := strings.Index(line, "gMonFrontPic_")
             end := strings.IndexByte(line, '=') - 3 // []
             if start == -1 {
-                fmt.Println("Error: Could not parse line: " + line)
+                logging.WarnLog("Could not parse line: " + line)
                 continue
             }
             key := strings.TrimSpace(line[start:end])

@@ -1,17 +1,17 @@
 package parsers
 
 import (
-    "fmt"
     "os"
     "strings"
     "strconv"
     "github.com/geefuoco/trainer_editor/data_objects"
+    "github.com/geefuoco/trainer_editor/logging"
 )
 
 func ParseTrainerParties(filepath string) []*data_objects.TrainerParty{
     file, err := os.ReadFile(filepath)
     if err != nil {
-        fmt.Println("Error when opening file: ", err)
+        logging.ErrorLog("when opening file: "+filepath)
         return nil
     }
 
@@ -32,6 +32,7 @@ func ParseTrainerParties(filepath string) []*data_objects.TrainerParty{
             if strings.Contains(line, "TrainerMon") {
                 start := strings.Index(line, "TrainerMon") + len("TrainerMon")
                 if start == -1 {
+                    logging.ErrorLog("Error when reading line: "+ line)
                     panic("Error: Malformatted TrainerMon struct")
                 }
                 // This way assumes the format
@@ -48,6 +49,7 @@ func ParseTrainerParties(filepath string) []*data_objects.TrainerParty{
             }else if strings.Contains(line, ".iv") {
                 start := strings.IndexByte(line, '=')
                 if start == -1 {
+                    logging.ErrorLog("Error when reading line: "+ line)
                     panic("Error: Malformatted TrainerMon struct")
                 }
                 startOffset := len("=TRAINER_PARTY_IVS(")
@@ -65,6 +67,7 @@ func ParseTrainerParties(filepath string) []*data_objects.TrainerParty{
             } else if strings.Contains(line, ".lvl") {
                 start := strings.Index(line, "=")
                 if start == -1 {
+                    logging.ErrorLog("Error when reading line: "+ line)
                     panic("Error: Malformatted TrainerMon struct")
                 }
                 startOffset := 1
@@ -75,7 +78,7 @@ func ParseTrainerParties(filepath string) []*data_objects.TrainerParty{
                 lvl := strings.TrimSpace(line[start+startOffset:end])
                 value, err := strconv.ParseUint(lvl, 10, 64)
                 if err != nil {
-                    fmt.Println("Error: Could not read level. Setting default")
+                    logging.WarnLog("Could not read level. Setting default")
                     currentMon.Lvl = 5
                 } else {
                     currentMon.Lvl = value
@@ -83,6 +86,7 @@ func ParseTrainerParties(filepath string) []*data_objects.TrainerParty{
             } else if strings.Contains(line, ".species") {
                 start := strings.IndexByte(line, '=')
                 if start == -1 {
+                    logging.ErrorLog("Error when reading line: "+ line)
                     panic("Error: Malformatted TrainerMon struct")
                 }
                 startOffset := 1
@@ -95,6 +99,7 @@ func ParseTrainerParties(filepath string) []*data_objects.TrainerParty{
             } else if strings.Contains(line, ".ev") {
                 start := strings.IndexByte(line, '=')
                 if start == -1 {
+                    logging.ErrorLog("Error when reading line: "+ line)
                     panic("Error: Malformatted TrainerMon struct")
                 }
                 startOffset := len("=TRAINER_PARTY_EVS(")
@@ -112,6 +117,7 @@ func ParseTrainerParties(filepath string) []*data_objects.TrainerParty{
             } else if strings.Contains(line, ".heldItem") {
                 start := strings.IndexByte(line, '=')
                 if start == -1 {
+                    logging.ErrorLog("Error when reading line: "+ line)
                     panic("Error: Malformatted TrainerMon struct")
                 }
                 startOffset := 1
@@ -125,6 +131,7 @@ func ParseTrainerParties(filepath string) []*data_objects.TrainerParty{
                 moves := [4]string{"MOVE_NONE", "MOVE_NONE", "MOVE_NONE", "MOVE_NONE"} 
                 start := strings.IndexByte(line, '{') + 1
                 if start == 0 {
+                    logging.ErrorLog("Error when reading line: "+ line)
                     panic("Error: Malformatted Trainer struct")
                 }
                 end := strings.IndexByte(line, '}')
@@ -137,6 +144,7 @@ func ParseTrainerParties(filepath string) []*data_objects.TrainerParty{
             } else if strings.Contains(line, ".ability") {
                 start := strings.IndexByte(line, '=')
                 if start == -1 {
+                    logging.ErrorLog("Error when reading line: "+ line)
                     panic("Error: Malformatted TrainerMon struct")
                 }
                 startOffset := 1

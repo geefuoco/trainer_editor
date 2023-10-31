@@ -3,13 +3,13 @@ package parsers
 import (
     "strings"
     "os"
-    "fmt"
+    "github.com/geefuoco/trainer_editor/logging"
 )
 
 func ParseMoves(filepath string) []string {
     file, err := os.ReadFile(filepath)
     if err != nil {
-        fmt.Println("Error: could not read file: " + filepath)
+        logging.ErrorLog(" could not read file: " + filepath)
         return nil
     }
 
@@ -23,7 +23,7 @@ func ParseMoves(filepath string) []string {
             start := strings.Index(line, "MOVE")
             end := GetNthIndex(line, 2, ' ')
             if start == -1 || end == -1 {
-                fmt.Println("Error: Could not parse line: " + line)
+                logging.WarnLog("Could not parse line: " + line)
                 continue
             }
             moves = append(moves, line[start:end])

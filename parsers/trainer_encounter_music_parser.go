@@ -2,14 +2,14 @@ package parsers
 
 import (
     "os"
-    "fmt"
     "strings"
+    "github.com/geefuoco/trainer_editor/logging"
 )
 
 func ParseTrainerEncounterMusic(input string) []string {
     file, err := os.ReadFile(input)
     if err != nil {
-        fmt.Println("Error: could not open file: " + input)
+        logging.ErrorLog("could not open file: " + input)
         return nil
     }
 
@@ -20,7 +20,7 @@ func ParseTrainerEncounterMusic(input string) []string {
             start := strings.Index(line, "TRAINER_ENCOUNTER_MUSIC")
             end := GetNthIndex(line, 2, ' ')
             if start > end{
-                fmt.Println("Error: could not parse line: \n" + line) 
+                logging.WarnLog("could not parse line: \n" + line) 
                 continue
             }
             item := strings.TrimSpace(line[start:end])

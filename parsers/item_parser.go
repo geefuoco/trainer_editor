@@ -3,13 +3,13 @@ package parsers
 import (
     "strings"
     "os"
-    "fmt"
+    "github.com/geefuoco/trainer_editor/logging"
 )
 
 func ParseItems(filepath string) []string {
     file, err := os.ReadFile(filepath)
     if err != nil {
-        fmt.Println("Error when opening file: ", err)
+        logging.ErrorLog("when opening file: "+filepath)
         return nil
     }
 
@@ -25,7 +25,7 @@ func ParseItems(filepath string) []string {
             startOffset := start
             endOffset := strings.LastIndexByte(line, ' ')
             if startOffset > endOffset {
-                fmt.Println("Error: could not parse line: \n" + line) 
+                logging.WarnLog("could not parse line: \n" + line) 
                 continue
             }
             item := strings.TrimSpace(line[startOffset:endOffset])

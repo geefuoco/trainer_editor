@@ -2,8 +2,8 @@ package parsers
 
 import (
     "os"
-    "fmt"
     "strings"
+    "github.com/geefuoco/trainer_editor/logging"
 )
 func ParseTrainerPics(gTrainerFrontPicPath, trainerSpritePath string) map[string]string {
     frontPics := parseTrainerFrontPics(gTrainerFrontPicPath)
@@ -22,7 +22,7 @@ func ParseTrainerPics(gTrainerFrontPicPath, trainerSpritePath string) map[string
 func parseTrainerPicKeys(filepath string) map[string]string {
     file, err := os.ReadFile(filepath)
     if err != nil {
-        fmt.Println("Error: could not read file: " + filepath)
+        logging.ErrorLog("could not read file: " + filepath)
         return nil
     }
 
@@ -46,7 +46,7 @@ func parseTrainerPicKeys(filepath string) map[string]string {
 func parseTrainerFrontPics(filepath string) map[string]string{
     file, err := os.ReadFile(filepath)
     if err != nil {
-        fmt.Println("Error: could not read file: " + filepath)
+        logging.ErrorLog("Error: could not read file: " + filepath)
         return nil
     }
 
@@ -59,7 +59,7 @@ func parseTrainerFrontPics(filepath string) map[string]string{
             start := strings.Index(line, "gTrainerFrontPic_")
             end := strings.IndexByte(line, '=') - 3 // []
             if start == -1 {
-                fmt.Println("Error: could not parse line: " + line)
+                logging.WarnLog(" could not parse line: " + line)
                 continue
             }
             key := strings.TrimSpace(line[start:end])

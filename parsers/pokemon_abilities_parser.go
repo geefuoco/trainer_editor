@@ -3,13 +3,13 @@ package parsers
 import (
     "strings"
     "os"
-    "fmt"
+    "github.com/geefuoco/trainer_editor/logging"
 )
 
 func ParsePokemonAbilities(filepath string) []string {
     file, err := os.ReadFile(filepath)
     if err != nil {
-        fmt.Println("Error: could not read file: " + filepath)
+        logging.ErrorLog("could not read file: " + filepath)
         return nil
     }
     fileContents := string(file)
@@ -19,7 +19,7 @@ func ParsePokemonAbilities(filepath string) []string {
             start := strings.Index(line, "ABILITY")
             end := GetNthIndex(line, 2, ' ')
             if start > end {
-                fmt.Println("Could not parse line: " + line)
+                logging.WarnLog("Could not parse line: " + line)
                 continue
             }
             abilities = append(abilities, strings.TrimSpace(line[start:end]))

@@ -2,14 +2,14 @@ package parsers
 
 import (
     "os"
-    "fmt"
     "strings"
+    "github.com/geefuoco/trainer_editor/logging"
 )
 
 func ParseAiFlags(filepath string) []string {
     file, err := os.ReadFile(filepath)
     if err != nil {
-        fmt.Println("Error: Could not open file: " + filepath)
+        logging.ErrorLog("Could not open file: " + filepath)
         return nil
     }
 
@@ -31,7 +31,7 @@ func ParseAiFlags(filepath string) []string {
             var index uint = 2
             endOffset := GetNthIndex(line, index, ' ')
             if endOffset == -1 {
-                fmt.Printf("Could not find %d index of ' ' in line: %s\n", index, line)
+                logging.WarnLog("Could not find %d index of ' ' in line: %s\n", index, line)
                 continue
             }
             flag := strings.TrimSpace(line[start:endOffset])

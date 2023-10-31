@@ -2,7 +2,6 @@ package ui
 
 import ( 
     "image/color"
-    "fmt"
     "fyne.io/fyne/v2"
     "fyne.io/fyne/v2/app"
     "fyne.io/fyne/v2/widget"
@@ -12,6 +11,7 @@ import (
     "fyne.io/fyne/v2/container"
     "github.com/geefuoco/trainer_editor/data_objects"
     "github.com/geefuoco/trainer_editor/parsers"
+    "github.com/geefuoco/trainer_editor/logging"
     "strings"
     "path/filepath"
     "time"
@@ -51,6 +51,7 @@ var pokemonPicMap = make(map[string]string)
 const HEIGHT = 900
 const WIDTH = 1200
 
+
 func RunApp() {
 	myApp := app.New()
 	myWindow := myApp.NewWindow("PokemonEmerald Decomp Trainer Editor")
@@ -88,7 +89,7 @@ func RunApp() {
     folderDialog := dialog.NewFolderOpen(
         func(uri fyne.ListableURI, err error) {
             if err != nil {
-                fmt.Println("Error Occurred")
+                logging.ErrorLog(err.Error())
                 return
             }
             if uri == nil {
@@ -107,7 +108,7 @@ func RunApp() {
             }
             if trainers == nil || len(trainers) == 0 {
                 createModal(myWindow, "Error", "Not in pokeemerald directory").Show()
-                fmt.Println("Error: Could not populate the trainer list")
+                logging.ErrorLog("Error: Could not populate the trainer list")
             }
         },
         myWindow,
@@ -126,6 +127,7 @@ func RunApp() {
             }
             if trainers != nil && len(trainers) > 0 && trainerParties != nil && len(trainerParties) > 0{
                 if projectPath == "" {
+                    logging.ErrorLog("Error: Did not find path to pokeemerald.")
                     createModal(myWindow, "Error", "Did not find path to pokeemerald directory").Show()
                     return
                 }
@@ -135,6 +137,7 @@ func RunApp() {
                 isSaving = true
                 err := data_objects.SaveAll(trainerPath, trainerPartyPath, trainers, trainerParties)
                 if err != nil {
+                    logging.ErrorLog(err.Error())
                     // Error Popup
                     createModal(myWindow, "Error", err.Error()).Show()
                 } else {
@@ -142,6 +145,9 @@ func RunApp() {
                     createModal(myWindow, "Saved", "Save successful").Show()
                 }
             }
+        }),
+        widget.NewToolbarAction(theme.DocumentCreateIcon(), func() {
+            logging.EnableLogging()
         }),
     )
 
@@ -215,6 +221,8 @@ func loadAllData(path string) {
     trainerEncounterMusics = parsers.ParseTrainerEncounterMusic(encounterMusicPath)
     moves = parsers.ParseMoves(movesPath)
     abilities = parsers.ParsePokemonAbilities(abilitiesPath)
+    logging.InfoLog("Loaded %d trainers", len(trainers))
+    logging.InfoLog("Loaded %d trainer parties", len(trainerParties))
 }
 
 func getTrainerParty(partyName string) *data_objects.TrainerParty {
@@ -248,6 +256,8 @@ func createList(listOfTrainers []*data_objects.Trainer) *widget.List {
         selectedParty := getTrainerParty(selectedTrainer.GetPartyName())
         selectedMonIndex = 0
         if selectedParty != nil {
+            print(selectedTrainer.String()+"\n")
+            print(selectedParty.String()+"\n")
             trainerInfo.Objects = []fyne.CanvasObject{}
             updatedTrainerInfo := createTrainerInfo(selectedTrainer)
             trainerInfo.Add(updatedTrainerInfo)

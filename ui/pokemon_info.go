@@ -3,6 +3,7 @@ package ui
 import (
     "github.com/geefuoco/trainer_editor/data_objects"
     "github.com/geefuoco/trainer_editor/custom_widgets"
+    "github.com/geefuoco/trainer_editor/logging"
     "fyne.io/fyne/v2"
     "fyne.io/fyne/v2/widget"
     "fyne.io/fyne/v2/container"
@@ -11,7 +12,6 @@ import (
     "strconv"
     "time"
     "math/rand"
-    "fmt"
 )
 
 const (
@@ -51,7 +51,7 @@ func createPartyInfo(trainerParty *data_objects.TrainerParty) *fyne.Container{
         mon := trainerMonList[i]
         value, has := pokemonPicMap[mon.Species]
         if !has {
-            fmt.Println("Error: '" + mon.Species + "' was not in the Pokemon Pic Map")
+            logging.WarnLog("'" + mon.Species + "' was not in the Pokemon Pic Map")
             pokemonPic = canvas.NewImageFromFile(pokemonPicMap["SPECIES_NONE"])
         } else {
             pokemonPic = canvas.NewImageFromFile(value)
@@ -158,7 +158,7 @@ func createPokemonInfoForm(trainerMonList []*data_objects.TrainerMon) *fyne.Cont
     levelEntry.OnChanged = func(s string) {
         lvl, err := strconv.ParseUint(s, 10, 64)
         if err != nil {
-            fmt.Printf("Error: could not parse '%s' to int\n", s)
+            logging.ErrorLog("could not parse '%s' to int\n", s)
             return
         }
         if lvl > 0 && lvl <= 100 {
@@ -255,7 +255,7 @@ func createPokemonIvsAndEvs(mon *data_objects.TrainerMon) *fyne.Container {
             }
             value, err := strconv.ParseUint(s, 10, 64)
             if err != nil {
-                fmt.Printf("Error: could not parse '%s' to int\n", s)
+                logging.ErrorLog("could not parse '%s' to int\n", s)
                 return
             }
             if value >= 0 && value <= 31 {
@@ -288,7 +288,7 @@ func createPokemonIvsAndEvs(mon *data_objects.TrainerMon) *fyne.Container {
             }
             value, err := strconv.ParseUint(s, 10, 64)
             if err != nil {
-                fmt.Printf("Error: could not parse '%s' to int\n", s)
+                logging.ErrorLog("Error: could not parse '%s' to int\n", s)
                 return
             }
             if value >= 0 && value <= 252 {

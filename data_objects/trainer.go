@@ -5,6 +5,7 @@ import (
     "reflect"
     "os"
     "bufio"
+    "github.com/geefuoco/trainer_editor/logging"
 )
 
 type Trainer struct{
@@ -57,6 +58,7 @@ func SaveTrainers(filepath string, trainers []*Trainer) error {
         return err
     }
     writer.Flush()
+    logging.InfoLog("Saved %d trainers to %s", len(trainers), filepath)
     return nil
 }
 
@@ -78,6 +80,7 @@ func SaveTrainerParties(filepath string, trainerParties []*TrainerParty) error {
             return err
         }
     }
+    logging.InfoLog("Saved %d trainer parties to %s", len(trainerParties), filepath)
     return writer.Flush()
 }
 

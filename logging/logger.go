@@ -18,16 +18,16 @@ func DisableLogging() {
 
 func InfoLog(message string, args...interface{}) {
     if isLoggingEnabled {
-        log.Printf("[INFO]: "+message, args)
+        log.Printf("[INFO]: "+message, args...)
     }
 }
 
 func WarnLog(message string, args...interface{}) {
     if isLoggingEnabled {
-        log.Printf("[WARN]: "+message, args)
+        log.Printf("[WARN]: "+message, args...)
     }
 }
 
 func ErrorLog(message string, args...interface{}) {
-    log.Printf("[ERROR]: "+message, args)
+    log.Printf("[ERROR]: "+message, args...)
 }

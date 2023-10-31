@@ -17,8 +17,11 @@ func ParseMoves(filepath string) []string {
     var moves []string
     for _, line := range strings.Split(fileContents, "\n") {
         if strings.Contains(line, "MOVE") {
-            if strings.Contains(line, "MOVES_COUNT") {
+            if strings.Contains(line, "FIRST_Z_MOVE") {
                 break
+            }
+            if strings.Contains(line, "MOVES_COUNT_GEN") {
+                continue
             }
             start := strings.Index(line, "MOVE")
             end := GetNthIndex(line, 2, ' ')

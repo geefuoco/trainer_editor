@@ -1,7 +1,20 @@
 # Pokemon Trainer Editor
 
 A pokemon trainer editor for [pokeemerald expansion](https://github.com/rh-hideout/pokeemerald-expansion)
+
+Checked on pokeemerald-expansion master branch with commit bd71946372775f44743390fa0f6a30f95051491a
+
 ---
+
+## Download
+
+Download the latest release [here](https://github.com/geefuoco/trainer_editor/releases/latest)
+
+## Build from source
+
+`git clone --depth=1 https://github.com/geefuoco/trainer_editor.git`
+
+`cd trainer_editor && go mod tidy && go build`
 
 # Features
 

@@ -26,9 +26,11 @@ Searchable list of trainers to edit their
 - Encounter Music
 - AI Flags
 - Items
-![trainer list and search](https://github.com/geefuoco/trainer_editor/assets/87877876/a08ce8e0-23fd-4569-8d54-dc5265d6eb3d)
+![trainer list and search](![image](https://github.com/geefuoco/trainer_editor/assets/87877876/0e9900d3-3bdb-4262-b489-94d1099e5df2)
+)
 
-![trainer editor](https://github.com/geefuoco/trainer_editor/assets/87877876/8a968b3b-8a12-4f06-b8b9-ca58f8d6e798)
+![trainer editor](![image](https://github.com/geefuoco/trainer_editor/assets/87877876/819025d5-c586-4a15-974e-c9dc957cf754)
+)
 
 The `party` tab lets you edit the current trainer's party. You can edit
 
@@ -39,7 +41,8 @@ The `party` tab lets you edit the current trainer's party. You can edit
 - IVs and EVs
 - Ability
 
-![trainer party editor](https://github.com/geefuoco/trainer_editor/assets/87877876/20e59a02-f09e-4207-8375-a857a929998f)
+![trainer party editor](![image](https://github.com/geefuoco/trainer_editor/assets/87877876/5266cd74-4bf2-47d4-81db-1cca9e323817)
+)
 
 
 

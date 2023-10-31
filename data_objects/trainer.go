@@ -19,8 +19,17 @@ type Trainer struct{
     Party string
 }
 
+func SaveAll(trainerFilePath string, trainerPartiesFilePath string, trainers []*Trainer, trainerParties []*TrainerParty) error {
+    err := SaveTrainers(trainerFilePath, trainers)
+    if err != nil {
+        return err
+    }
+    err = SaveTrainerParties(trainerPartiesFilePath, trainerParties)
+    return err
+}
+
 func SaveTrainers(filepath string, trainers []*Trainer) error {
-    file, err := os.OpenFile(filepath, os.O_WRONLY, 0666)
+    file, err := os.OpenFile(filepath, os.O_WRONLY|os.O_TRUNC, 0666)
     if err != nil {
         return err
     }
@@ -49,6 +58,27 @@ func SaveTrainers(filepath string, trainers []*Trainer) error {
     }
     writer.Flush()
     return nil
+}
+
+func SaveTrainerParties(filepath string, trainerParties []*TrainerParty) error {
+    file, err := os.OpenFile(filepath, os.O_WRONLY|os.O_TRUNC, 0666)
+    if err != nil {
+        return err
+    }
+    defer file.Close()
+    writer := bufio.NewWriter(file)
+
+    for _, trainerParty := range trainerParties {
+        _, err = writer.WriteString(trainerParty.String())
+        if err != nil {
+            return err
+        }
+        _, err = writer.WriteString("\n")
+        if err != nil {
+            return err
+        }
+    }
+    return writer.Flush()
 }
 
 func (t* Trainer) GetPartyName() string {

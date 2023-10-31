@@ -124,17 +124,17 @@ func RunApp() {
             if isSaving {
                 return
             }
-            if trainers != nil && len(trainers) > 0 {
+            if trainers != nil && len(trainers) > 0 && trainerParties != nil && len(trainerParties) > 0{
                 if projectPath == "" {
-                    fmt.Println("Error: Did not find path to pokeemerald.")
                     createModal(myWindow, "Error", "Did not find path to pokeemerald directory").Show()
                     return
                 }
                 trainerPath := buildTrainerPath(projectPath)
+                trainerPartyPath := buildTrainerPartiesPath(projectPath)
+
                 isSaving = true
-                err := data_objects.SaveTrainers(trainerPath, trainers)
+                err := data_objects.SaveAll(trainerPath, trainerPartyPath, trainers, trainerParties)
                 if err != nil {
-                    fmt.Println("Error: " + err.Error())
                     // Error Popup
                     createModal(myWindow, "Error", err.Error()).Show()
                 } else {
@@ -238,7 +238,7 @@ func createList(listOfTrainers []*data_objects.Trainer) *widget.List {
             return widget.NewLabel("template")
         },
         func(i widget.ListItemID, o fyne.CanvasObject) {
-            displayText := listOfTrainers[i].TrainerClass + " " + listOfTrainers[i].TrainerName
+            displayText := listOfTrainers[i].TrainerClass + " " + listOfTrainers[i].TrainerKey
             o.(*widget.Label).SetText(displayText)
         })
 

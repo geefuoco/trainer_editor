@@ -23,6 +23,29 @@ type TrainerMon struct {
     IsShiny bool
 }
 
+type PokemonSpeciesInfo struct {
+    Species    string
+    BaseHp     uint64
+    BaseAtk    uint64
+    BaseDef    uint64
+    BaseSpd    uint64
+    BaseSpAtk  uint64
+    BaseSpDef  uint64
+    Types      [2]string
+}
+
+func TemplateSpeciesInfo() *PokemonSpeciesInfo {
+    return &PokemonSpeciesInfo {
+        Species: "SPECIES_NONE",
+        BaseHp: 0,
+        BaseAtk: 0,
+        BaseDef: 0,
+        BaseSpd: 0, 
+        BaseSpAtk: 0,
+        BaseSpDef: 0,
+    }
+}
+
 func TemplateMon() *TrainerMon {
     return &TrainerMon{
             Iv: [6]uint64{0, 0, 0, 0, 0, 0},
@@ -33,6 +56,58 @@ func TemplateMon() *TrainerMon {
             Moves: [4]string{"MOVE_NONE", "MOVE_NONE", "MOVE_NONE", "MOVE_NONE"},
             IsShiny: false,
     }
+}
+
+func (sp* PokemonSpeciesInfo) String() string {
+    padding := "    "
+    var buf strings.Builder
+    buf.WriteString(padding)
+    buf.WriteString("["+sp.Species+"] = \n")
+    buf.WriteString(padding)
+    buf.WriteString("{\n")
+    buf.WriteString(padding)
+    buf.WriteString(padding)
+    buf.WriteString(".baseHP        = ")
+    value := strconv.FormatUint(sp.BaseHp, 10)
+    buf.WriteString(value+",\n")
+    buf.WriteString(padding)
+    buf.WriteString(padding)
+    buf.WriteString(".baseAttack    = ")
+    value = strconv.FormatUint(sp.BaseAtk, 10)
+    buf.WriteString(value+",\n")
+    buf.WriteString(padding)
+    buf.WriteString(padding)
+    buf.WriteString(".baseDefense   = ")
+    value = strconv.FormatUint(sp.BaseDef, 10)
+    buf.WriteString(value+",\n")
+    buf.WriteString(padding)
+    buf.WriteString(padding)
+    buf.WriteString(".baseSpeed     = ")
+    value = strconv.FormatUint(sp.BaseSpd, 10)
+    buf.WriteString(value+",\n")
+    buf.WriteString(padding)
+    buf.WriteString(padding)
+    buf.WriteString(".baseSpAttack  = ")
+    value = strconv.FormatUint(sp.BaseSpAtk, 10)
+    buf.WriteString(value+",\n")
+    buf.WriteString(padding)
+    buf.WriteString(padding)
+    buf.WriteString(".baseSpDefense = ")
+    value = strconv.FormatUint(sp.BaseSpDef, 10)
+    buf.WriteString(value+",\n")
+    buf.WriteString(padding)
+    buf.WriteString(padding)
+    buf.WriteString(".types = {")
+    for i, x := range sp.Types {
+        buf.WriteString(x)
+        if i == 0 {
+            buf.WriteString(", ")
+        }
+    }
+    buf.WriteString("},\n")
+    buf.WriteString(padding)
+    buf.WriteString("},\n")
+    return buf.String()
 }
 
 func (mon *TrainerMon) String() string {

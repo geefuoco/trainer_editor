@@ -55,8 +55,15 @@ func ParsePokemonSpeciesInfo(fileContents string) []*data_objects.PokemonSpecies
             if currentSpeciesInfo.Species == "" {
                 continue
             }
-            start := strings.IndexByte(line, '=')
-            end := strings.IndexByte(line, ',')
+            var start int
+            var end int
+            if strings.Contains(line, "P_UPDATED_STATS") {
+                start = strings.IndexByte(line, '?')+1
+                end = strings.IndexByte(line, ':')
+            } else {
+                start = strings.IndexByte(line, '=')
+                end = strings.IndexByte(line, ',')
+            }
             if start == -1 || end == -1 || start > end {
                 logging.WarnLog("Could not parse line: "+line)
                 skip=true

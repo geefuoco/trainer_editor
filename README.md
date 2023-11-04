@@ -41,8 +41,8 @@ The `party` tab lets you edit the current trainer's party. You can edit
 - IVs and EVs
 - Ability
 
-![image](https://github.com/geefuoco/trainer_editor/assets/87877876/5266cd74-4bf2-47d4-81db-1cca9e323817)
+You will also be able to view the pokemon's base stats
 
-
+![image](https://github.com/geefuoco/trainer_editor/assets/87877876/b3ece84a-8ca4-428d-a524-989db3f1ca9a)
 
 

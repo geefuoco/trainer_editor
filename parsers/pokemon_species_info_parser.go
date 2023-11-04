@@ -13,7 +13,18 @@ var SpeciesFileContents string
 
 func ParsePokemonSpeciesInfo(fileContents string) []*data_objects.PokemonSpeciesInfo {
 
-    speciesInfos := []*data_objects.PokemonSpeciesInfo {}
+    speciesInfos := []*data_objects.PokemonSpeciesInfo {
+        {
+            Species: "SPECIES_NONE",
+            BaseHp: 0,
+            BaseAtk: 0,
+            BaseDef: 0,
+            BaseSpd: 0,
+            BaseSpAtk: 0,
+            BaseSpDef: 0,
+            Types: [2]string{"TYPE_NONE", "TYPE_NONE"},
+        },
+    }
     var skip bool
     currentSpeciesInfo := &data_objects.PokemonSpeciesInfo{}
 

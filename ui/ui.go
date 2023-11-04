@@ -49,6 +49,8 @@ var selectedMonIndex        widget.ListItemID
 var trainerPicMap = make(map[string]string)
 var pokemonPicMap = make(map[string]string)
 
+var speciesInfo = parsers.ParsePokemonSpeciesInfo(parsers.SpeciesFileContents)
+
 const HEIGHT = 900
 const WIDTH = 1200
 

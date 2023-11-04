@@ -25,12 +25,13 @@ const (
 )
 const maxEvs int = 510
 
+var infoForm            *fyne.Container
+var ivsAndEvs           *fyne.Container
+var pokemonSpeciesInfo  *fyne.Container
+var partyInfoGrid       *fyne.Container
+
 func createPartyInfo(trainerParty *data_objects.TrainerParty) *fyne.Container{
     content := container.NewMax()
-    // var movesForm *fyne.Container
-    var infoForm *fyne.Container
-    var ivsAndEvs *fyne.Container
-    var grid *fyne.Container
 
     trainerMonList := trainerParty.Party
 
@@ -61,13 +62,12 @@ func createPartyInfo(trainerParty *data_objects.TrainerParty) *fyne.Container{
         pokemonPic.Refresh()
         pokemonPicWrapper.Objects[0] = pokemonPic
         pokemonPicWrapper.Refresh()
-        // movesForm = createMovesForm(mon)
         infoForm = createPokemonInfoForm(trainerMonList)
         ivsAndEvs = createPokemonIvsAndEvs(mon)
-        // Should always be in the bottom left (3rd) position
-        // grid.Objects[2] = movesForm
-        grid.Objects[2] = infoForm
-        grid.Objects[3] = ivsAndEvs
+        pokemonSpeciesInfo = createSpeciesInfo(mon.Species)
+        partyInfoGrid.Objects[2] = infoForm
+        partyInfoGrid.Objects[3] = ivsAndEvs
+        partyInfoGrid.Objects[4] = pokemonSpeciesInfo
     }
 
 
@@ -104,12 +104,13 @@ func createPartyInfo(trainerParty *data_objects.TrainerParty) *fyne.Container{
     currentMon := trainerMonList[selectedMonIndex]
     infoForm = createPokemonInfoForm(trainerMonList)
     ivsAndEvs = createPokemonIvsAndEvs(currentMon)
+    pokemonSpeciesInfo = createSpeciesInfo(currentMon.Species)
     pokemonPicWrapper = container.NewMax(pokemonPic)
-    grid = container.New(layout.NewGridLayout(3), leftPanel, pokemonPicWrapper, infoForm, ivsAndEvs)
+    partyInfoGrid = container.New(layout.NewGridLayout(3), leftPanel, pokemonPicWrapper, infoForm, ivsAndEvs, pokemonSpeciesInfo)
 
     // Make sure only to select once all other containers have been defined
     monList.Select(0)
-    content.Add(grid)
+    content.Add(partyInfoGrid)
     return content
 }
 
@@ -146,6 +147,12 @@ func createPokemonInfoForm(trainerMonList []*data_objects.TrainerMon) *fyne.Cont
                 pokemonPic.Refresh()
                 pokemonPicWrapper.Objects[0] = pokemonPic
                 pokemonPicWrapper.Refresh()
+                infoForm = createPokemonInfoForm(trainerMonList)
+                ivsAndEvs = createPokemonIvsAndEvs(mon)
+                pokemonSpeciesInfo = createSpeciesInfo(mon.Species)
+                partyInfoGrid.Objects[2] = infoForm
+                partyInfoGrid.Objects[3] = ivsAndEvs
+                partyInfoGrid.Objects[4] = pokemonSpeciesInfo
             }
         })
     }

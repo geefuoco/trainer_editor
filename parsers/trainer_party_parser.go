@@ -54,6 +54,10 @@ func ParseTrainerParties(filepath string) []*data_objects.TrainerParty{
                 }
                 startOffset := len("=TRAINER_PARTY_IVS(")
                 end := strings.IndexByte(line, ')')
+                if end < start+startOffset {
+                    logging.ErrorLog("Error: when reading line: "+line)
+                    panic("Error: Malformatted TrainerMon struct")
+                }
                 var ivs [6]uint64
                 for i, iv := range strings.Split(line[start+startOffset:end], ",") {
                     if !(iv ==  "" || iv == "\n") {

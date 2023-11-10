@@ -8134,7 +8134,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .noFlip = FALSE,
     },
 
-    [SPECIES_CASTFORM_NORMAL] = {
+    [SPECIES_CASTFORM] = {
 .baseHP = 70,
 .baseAttack = 70,
 .baseDefense = 70,
@@ -9551,7 +9551,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .noFlip = FALSE,
     },
 
-    [SPECIES_BURMY_PLANT_CLOAK] = {
+    [SPECIES_BURMY] = {
 .baseHP = 40,
 .baseAttack = 29,
 .baseDefense = 45,
@@ -9572,7 +9572,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
 .noFlip = FALSE, 
 },
 
-    [SPECIES_WORMADAM_PLANT_CLOAK] =
+    [SPECIES_WORMADAM] =
     {
         .baseHP = 60,
         .baseAttack = 59,
@@ -9755,7 +9755,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .noFlip = FALSE,
     },
 
-    [SPECIES_CHERRIM_OVERCAST] = {
+    [SPECIES_CHERRIM] = {
 .baseHP = 70,
 .baseAttack = 60,
 .baseDefense = 70,
@@ -9777,7 +9777,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
 .noFlip = FALSE, 
 },
 
-    [SPECIES_SHELLOS_WEST_SEA] = {
+    [SPECIES_SHELLOS] = {
 .baseHP = 76,
 .baseAttack = 48,
 .baseDefense = 48,
@@ -9798,7 +9798,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
 .noFlip = FALSE, 
 },
 
-    [SPECIES_GASTRODON_WEST_SEA] = {
+    [SPECIES_GASTRODON] = {
 .baseHP = 111,
 .baseAttack = 83,
 .baseDefense = 68,
@@ -11379,7 +11379,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .flags = SPECIES_FLAG_MYTHICAL,
     },
 
-    [SPECIES_SHAYMIN_LAND] =
+    [SPECIES_SHAYMIN] =
     {
         .baseHP = 100,
         .baseAttack = 100,
@@ -11404,7 +11404,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .flags = SPECIES_FLAG_MYTHICAL,
     },
 
-    [SPECIES_ARCEUS_NORMAL] =
+    [SPECIES_ARCEUS] =
     {
         .baseHP = 120,
         .baseAttack = 120,
@@ -12731,7 +12731,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .noFlip = TRUE,
     },
 
-    [SPECIES_BASCULIN_RED_STRIPED] =
+    [SPECIES_BASCULIN] =
     {
         .baseHP = 70,
         .baseAttack = 92,
@@ -12849,7 +12849,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .noFlip = FALSE,
     },
 
-    [SPECIES_DARMANITAN_STANDARD_MODE] =
+    [SPECIES_DARMANITAN] =
     {
         .baseHP = 105,
         .baseAttack = 140,
@@ -13527,7 +13527,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .noFlip = FALSE,
     },
 
-    [SPECIES_DEERLING_SPRING] = {
+    [SPECIES_DEERLING] = {
 .baseHP = 60,
 .baseAttack = 60,
 .baseDefense = 50,
@@ -13548,7 +13548,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
 .noFlip = FALSE, 
 },
 
-    [SPECIES_SAWSBUCK_SPRING] = {
+    [SPECIES_SAWSBUCK] = {
 .baseHP = 80,
 .baseAttack = 100,
 .baseDefense = 70,
@@ -14794,7 +14794,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .flags = SPECIES_FLAG_LEGENDARY,
     },
 
-    [SPECIES_TORNADUS_INCARNATE] =
+    [SPECIES_TORNADUS] =
     {
         .baseHP = 79,
         .baseAttack = 115,
@@ -14817,7 +14817,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .flags = SPECIES_FLAG_LEGENDARY,
     },
 
-    [SPECIES_THUNDURUS_INCARNATE] =
+    [SPECIES_THUNDURUS] =
     {
         .baseHP = 79,
         .baseAttack = 115,
@@ -14886,7 +14886,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .flags = SPECIES_FLAG_LEGENDARY,
     },
 
-    [SPECIES_LANDORUS_INCARNATE] =
+    [SPECIES_LANDORUS] =
     {
         .baseHP = 89,
         .baseAttack = 125,
@@ -14934,7 +14934,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .flags = SPECIES_FLAG_LEGENDARY,
     },
 
-    [SPECIES_KELDEO_ORDINARY] =
+    [SPECIES_KELDEO] =
     {
         .baseHP = 91,
         .baseAttack = 72,
@@ -14957,7 +14957,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .flags = SPECIES_FLAG_MYTHICAL,
     },
 
-    [SPECIES_MELOETTA_ARIA] =
+    [SPECIES_MELOETTA] =
     {
         .baseHP = 100,
         .baseAttack = 77,
@@ -15361,7 +15361,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .noFlip = FALSE,
     },
 
-    [SPECIES_VIVILLON_ICY_SNOW] = {
+    [SPECIES_VIVILLON] = {
 .baseHP = 80,
 .baseAttack = 52,
 .baseDefense = 50,
@@ -15428,7 +15428,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .noFlip = FALSE,
     },
 
-    [SPECIES_FLABEBE_RED_FLOWER] = {
+    [SPECIES_FLABEBE] = {
 .baseHP = 44,
 .baseAttack = 38,
 .baseDefense = 39,
@@ -15449,7 +15449,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
 .noFlip = FALSE, 
 },
 
-    [SPECIES_FLOETTE_RED_FLOWER] = {
+    [SPECIES_FLOETTE] = {
 .baseHP = 54,
 .baseAttack = 45,
 .baseDefense = 47,
@@ -15470,7 +15470,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
 .noFlip = FALSE, 
 },
 
-    [SPECIES_FLORGES_RED_FLOWER] = {
+    [SPECIES_FLORGES] = {
 .baseHP = 78,
 .baseAttack = 65,
 .baseDefense = 68,
@@ -15581,7 +15581,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .noFlip = FALSE,
     },
 
-    [SPECIES_FURFROU_NATURAL] = {
+    [SPECIES_FURFROU] = {
 .baseHP = 75,
 .baseAttack = 80,
 .baseDefense = 60,
@@ -15624,7 +15624,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .noFlip = FALSE,
     },
 
-    [SPECIES_MEOWSTIC_MALE] =
+    [SPECIES_MEOWSTIC] =
     {
         .baseHP = 74,
         .baseAttack = 48,
@@ -15690,7 +15690,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .noFlip = FALSE,
     },
 
-    [SPECIES_AEGISLASH_SHIELD] =
+    [SPECIES_AEGISLASH] =
     {
         .baseHP = 60,
         .baseAttack = 50,
@@ -16343,7 +16343,8 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .noFlip = FALSE,
     },
 
-    [SPECIES_PUMPKABOO_AVERAGE] =
+
+    [SPECIES_PUMPKABOO] =
     {
         .baseHP = 49,
         .baseAttack = 66,
@@ -16365,7 +16366,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
 .noFlip = FALSE,
     },
 
-    [SPECIES_GOURGEIST_AVERAGE] =
+    [SPECIES_GOURGEIST] =
     {
         .baseHP = 65,
         .baseAttack = 90,
@@ -16386,6 +16387,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
 .bodyColor = BODY_COLOR_BROWN,
 .noFlip = FALSE,
     },
+
 
     [SPECIES_BERGMITE] =
     {
@@ -16491,7 +16493,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .noFlip = FALSE,
     },
 
-    [SPECIES_XERNEAS_NEUTRAL] = {
+    [SPECIES_XERNEAS] = {
 .baseHP = 126,
 .baseAttack = 131,
 .baseDefense = 95,
@@ -16535,7 +16537,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .flags = SPECIES_FLAG_LEGENDARY,
     },
 
-    [SPECIES_ZYGARDE_50_AURA_BREAK] = {
+    [SPECIES_ZYGARDE_50] = {
 .baseHP = 108,
 .baseAttack = 100,
 .baseDefense = 121,
@@ -16580,7 +16582,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .flags = SPECIES_FLAG_MYTHICAL,
     },
 
-    [SPECIES_HOOPA_CONFINED] =
+    [SPECIES_HOOPA] =
     {
         .baseHP = 80,
         .baseAttack = 110,
@@ -17054,7 +17056,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .noFlip = FALSE,
     },
 
-    [SPECIES_ORICORIO_BAILE] = {
+    [SPECIES_ORICORIO] = {
 .baseHP = 75,
 .baseAttack = 70,
 .baseDefense = 70,
@@ -17143,7 +17145,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
 .noFlip = FALSE, 
 },
 
-    [SPECIES_LYCANROC_MIDDAY] =
+    [SPECIES_LYCANROC] =
     {
         .baseHP = 75,
         .baseAttack = 115,
@@ -17165,7 +17167,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .noFlip = FALSE,
     },
 
-    [SPECIES_WISHIWASHI_SOLO] =
+    [SPECIES_WISHIWASHI] =
     {
         .baseHP = 45,
         .baseAttack = 20,
@@ -17780,7 +17782,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .flags = SPECIES_FLAG_LEGENDARY,
     },
 
-    [SPECIES_SILVALLY_NORMAL] = {
+    [SPECIES_SILVALLY] = {
 .baseHP = 95,
 .baseAttack = 95,
 .baseDefense = 95,
@@ -17801,7 +17803,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
 .noFlip = FALSE,
 .flags = SPECIES_FLAG_LEGENDARY, },
 
-    [SPECIES_MINIOR_METEOR_RED] = {
+    [SPECIES_MINIOR] = {
 .baseHP = 60,
 .baseAttack = 60,
 .baseDefense = 100,
@@ -17892,7 +17894,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .noFlip = FALSE,
     },
 
-    [SPECIES_MIMIKYU_DISGUISED] = {
+    [SPECIES_MIMIKYU] = {
 .baseHP = 55,
 .baseAttack = 90,
 .baseDefense = 80,
@@ -19494,7 +19496,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .noFlip = FALSE,
     },
 
-    [SPECIES_TOXTRICITY_AMPED] =
+    [SPECIES_TOXTRICITY] =
     {
         .baseHP = 75,
 .baseAttack = 98,
@@ -19604,7 +19606,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .noFlip = FALSE,
     },
 
-    [SPECIES_SINISTEA_PHONY] = {
+    [SPECIES_SINISTEA] = {
 .baseHP = 40,
 .baseAttack = 45,
 .baseDefense = 45,
@@ -19625,7 +19627,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
 .noFlip = FALSE, 
 },
 
-    [SPECIES_POLTEAGEIST_PHONY] = {
+    [SPECIES_POLTEAGEIST] = {
 .baseHP = 60,
 .baseAttack = 65,
 .baseDefense = 65,
@@ -19933,7 +19935,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .noFlip = FALSE,
     },
 # 20435 "src/data/pokemon/species_info.h"
-    [SPECIES_ALCREMIE_STRAWBERRY_VANILLA_CREAM] = {
+    [SPECIES_ALCREMIE] = {
 .baseHP = 65,
 .baseAttack = 60,
 .baseDefense = 75,
@@ -19953,7 +19955,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
 .bodyColor = BODY_COLOR_WHITE,
 .noFlip = FALSE, 
 },
-    [SPECIES_ALCREMIE_STRAWBERRY_RUBY_CREAM] = {
+    [SPECIES_ALCREMIE_RUBY_CREAM] = {
 .baseHP = 65,
 .baseAttack = 60,
 .baseDefense = 75,
@@ -19973,7 +19975,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
 .bodyColor = BODY_COLOR_PINK,
 .noFlip = FALSE, 
 },
-    [SPECIES_ALCREMIE_STRAWBERRY_MATCHA_CREAM] = {
+    [SPECIES_ALCREMIE_MATCHA_CREAM] = {
 .baseHP = 65,
 .baseAttack = 60,
 .baseDefense = 75,
@@ -19993,7 +19995,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
 .bodyColor = BODY_COLOR_GREEN,
 .noFlip = FALSE, 
 },
-    [SPECIES_ALCREMIE_STRAWBERRY_MINT_CREAM] = {
+    [SPECIES_ALCREMIE_MINT_CREAM] = {
 .baseHP = 65,
 .baseAttack = 60,
 .baseDefense = 75,
@@ -20013,7 +20015,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
 .bodyColor = BODY_COLOR_BLUE,
 .noFlip = FALSE, 
 },
-    [SPECIES_ALCREMIE_STRAWBERRY_LEMON_CREAM] = {
+    [SPECIES_ALCREMIE_LEMON_CREAM] = {
 .baseHP = 65,
 .baseAttack = 60,
 .baseDefense = 75,
@@ -20033,7 +20035,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
 .bodyColor = BODY_COLOR_YELLOW,
 .noFlip = FALSE, 
 },
-    [SPECIES_ALCREMIE_STRAWBERRY_SALTED_CREAM] = {
+    [SPECIES_ALCREMIE_SALTED_CREAM] = {
 .baseHP = 65,
 .baseAttack = 60,
 .baseDefense = 75,
@@ -20053,7 +20055,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
 .bodyColor = BODY_COLOR_WHITE,
 .noFlip = FALSE, 
 },
-    [SPECIES_ALCREMIE_STRAWBERRY_RUBY_SWIRL] = {
+    [SPECIES_ALCREMIE_RUBY_SWIRL] = {
 .baseHP = 65,
 .baseAttack = 60,
 .baseDefense = 75,
@@ -20073,7 +20075,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
 .bodyColor = BODY_COLOR_YELLOW,
 .noFlip = FALSE, 
 },
-    [SPECIES_ALCREMIE_STRAWBERRY_CARAMEL_SWIRL] = {
+    [SPECIES_ALCREMIE_CARAMEL_SWIRL] = {
 .baseHP = 65,
 .baseAttack = 60,
 .baseDefense = 75,
@@ -20093,7 +20095,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
 .bodyColor = BODY_COLOR_BROWN,
 .noFlip = FALSE, 
 },
-    [SPECIES_ALCREMIE_STRAWBERRY_RAINBOW_SWIRL] = {
+    [SPECIES_ALCREMIE_RAINBOW_SWIRL] = {
 .baseHP = 65,
 .baseAttack = 60,
 .baseDefense = 75,
@@ -21305,7 +21307,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .noFlip = FALSE,
     },
 
-    [SPECIES_EISCUE_ICE_FACE] =
+    [SPECIES_EISCUE] =
     {
         .baseHP = 75,
         .baseAttack = 80,
@@ -21327,7 +21329,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .noFlip = FALSE,
     },
 
-    [SPECIES_INDEEDEE_MALE] =
+    [SPECIES_INDEEDEE] =
     {
         .baseHP = 60,
         .baseAttack = 65,
@@ -21349,7 +21351,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .noFlip = FALSE,
     },
 
-    [SPECIES_MORPEKO_FULL_BELLY] = {
+    [SPECIES_MORPEKO] = {
 .baseHP = 58,
 .baseAttack = 95,
 .baseDefense = 58,
@@ -21592,7 +21594,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .noFlip = FALSE,
     },
 
-    [SPECIES_ZACIAN_HERO_OF_MANY_BATTLES] =
+    [SPECIES_ZACIAN] =
     {
         .baseHP = 92,
         .baseAttack = P_UPDATED_STATS >= GEN_9 ? 120 : 130,
@@ -21615,7 +21617,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .flags = SPECIES_FLAG_LEGENDARY,
     },
 
-    [SPECIES_ZAMAZENTA_HERO_OF_MANY_BATTLES] =
+    [SPECIES_ZAMAZENTA] =
     {
         .baseHP = 92,
         .baseAttack = P_UPDATED_STATS >= GEN_9 ? 120 : 130,
@@ -21684,7 +21686,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .flags = SPECIES_FLAG_LEGENDARY,
     },
 
-    [SPECIES_URSHIFU_SINGLE_STRIKE_STYLE] = {
+    [SPECIES_URSHIFU] = {
 .baseHP = 100,
 .baseAttack = 130,
 .baseDefense = 100,
@@ -21908,7 +21910,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .noFlip = FALSE,
     },
 
-    [SPECIES_BASCULEGION_MALE] =
+    [SPECIES_BASCULEGION] =
     {
         .baseHP = 120,
         .baseAttack = 112,
@@ -21996,7 +21998,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .noFlip = FALSE,
     },
 
-    [SPECIES_ENAMORUS_INCARNATE] =
+    [SPECIES_ENAMORUS] =
     {
         .baseHP = 74,
         .baseAttack = 115,
@@ -23999,7 +24001,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .flags = SPECIES_FLAG_GALARIAN_FORM,
     },
 
-    [SPECIES_DARMANITAN_GALARIAN_STANDARD_MODE] =
+    [SPECIES_DARMANITAN_GALARIAN] =
     {
         .baseHP = 105,
         .baseAttack = 140,
@@ -27747,7 +27749,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
 .noFlip = FALSE,
 .flags = SPECIES_FLAG_LEGENDARY, },
 
-    [SPECIES_ZYGARDE_10_AURA_BREAK] = {
+    [SPECIES_ZYGARDE_10] = {
 .baseHP = 54,
 .baseAttack = 100,
 .baseDefense = 71,

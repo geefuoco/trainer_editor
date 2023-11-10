@@ -16537,7 +16537,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .flags = SPECIES_FLAG_LEGENDARY,
     },
 
-    [SPECIES_ZYGARDE_50] = {
+    [SPECIES_ZYGARDE] = {
 .baseHP = 108,
 .baseAttack = 100,
 .baseDefense = 121,

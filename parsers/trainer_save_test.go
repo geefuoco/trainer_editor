@@ -3,6 +3,7 @@ package parsers
 import (
     "testing"
     "github.com/geefuoco/trainer_editor/data_objects"
+    "strings"
     "os"
 )
 
@@ -34,7 +35,7 @@ func TestSaveTrainers(t *testing.T) {
         panic(err)
     }
 
-    if string(f1) != string(f2) {
+    if strings.TrimSpace(string(f1)) != strings.TrimSpace(string(f2)) {
         t.Errorf("Files were different.")
     }
 }

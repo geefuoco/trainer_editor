@@ -105,7 +105,7 @@ func ParseTrainers(filepath string) []*data_objects.Trainer {
             startOffset := 1
             endOffset := 1
             // Currently there is only 18 AI Flags Available
-            aiFlags := make([]string, 0, 20)
+            aiFlags := []string{}
             if strings.Contains(line, "AI_FLAG") {
                 aiFlags = strings.Split(line[start+startOffset:len(line)-endOffset], "|")
             }

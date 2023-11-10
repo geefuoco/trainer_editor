@@ -3,6 +3,7 @@ package ui
 import (
     "github.com/geefuoco/trainer_editor/data_objects"
     "github.com/geefuoco/trainer_editor/custom_widgets"
+    "github.com/geefuoco/trainer_editor/logging"
     "time"
     "strings"
     "fyne.io/fyne/v2"
@@ -219,31 +220,22 @@ func createTrainerInfo(trainer *data_objects.Trainer) *fyne.Container{
     }
     form.Add(itemSelectBox3)
     
-    // AI Flags
-    // Chunk the ai flags
-    // Arbitrary 3 chunks
-    var NUM_COLUMNS int = 3
-    chunks := len(aiFlags) / NUM_COLUMNS
-    if len(aiFlags) % NUM_COLUMNS != 0 {
-        chunks++
-    }
+
     aiFlagsLabel := widget.NewLabel("AI Flags")
     form.Add(aiFlagsLabel)
-    aiFlagsCheckGroup := container.New(layout.NewGridLayout(NUM_COLUMNS))
-    for j:=0; j < len(aiFlags); j+= chunks {
-        end := j + chunks
-        if end > len(aiFlags) {
-            end = len(aiFlags)
+    check := widget.NewCheckGroup(aiFlags, func(opts []string) {
+        logging.InfoLog("Current AI Flags")
+        for _, x := range opts {
+            logging.InfoLog(x)
         }
-        check := widget.NewCheckGroup(aiFlags[j:end], func(opts []string) {
-            trainer.AiFlags = opts
-        })
-        if trainer.AiFlags != nil {
-            check.SetSelected(trainer.AiFlags)
-        }
-        aiFlagsCheckGroup.Add(check)
+        logging.InfoLog("---------------------")
+        trainer.AiFlags = opts
+    })
+    check.Horizontal = true
+    if trainer.AiFlags != nil {
+        check.SetSelected(trainer.AiFlags)
     }
-    form.Add(container.NewHScroll(aiFlagsCheckGroup))
+    form.Add(container.NewHScroll(check))
     // Double Battle
     doubleBattleLabel := widget.NewLabel("Double Battle")
     doubleBattleCheck := widget.NewCheck("", func(checked bool){

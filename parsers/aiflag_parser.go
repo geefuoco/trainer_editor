@@ -26,6 +26,8 @@ func ParseAiFlags(filepath string) []string {
             continue
         } else if strings.Contains(line, "SCREEN") {
             continue
+        } else if strings.Contains(line, "DOUBLE_BATTLE") {
+            continue
         } else if strings.Contains(line, "AI_FLAG") {
             start := strings.Index(line, "AI_FLAG")
             var index uint = 2

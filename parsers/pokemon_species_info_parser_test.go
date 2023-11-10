@@ -22,6 +22,16 @@ func TestParsePokemonSpeciesInfo(t *testing.T) {
 
     expected := []*data_objects.PokemonSpeciesInfo{
         {
+            Species: "SPECIES_NONE",
+            BaseHp: 0,
+            BaseAtk: 0,
+            BaseDef: 0,
+            BaseSpd: 0,
+            BaseSpAtk: 0,
+            BaseSpDef: 0,
+            Types: [2]string{"TYPE_NONE", "TYPE_NONE"},
+        },
+        {
             Species: "SPECIES_BULBASAUR",
             BaseHp: 45,
             BaseAtk: 49,
@@ -80,7 +90,7 @@ func TestParsePokemonSpeciesInfo(t *testing.T) {
     if len(actual) != len(expected) {
         t.Errorf("Length mismatch %d vs expected %d", len(actual), len(expected))
         t.Log("Missing: ")
-        for _, sp := range missingSpeciesInfo {
+        for _, sp := range actual {
             t.Log(sp)
         }
         return
